@@ -14,14 +14,14 @@ type TabContent = {
 
 const TabsContent: TabContent[] = [
   {
-    name: '試字體',
+    name: 'Members',
     link: '/members',
-    icon: <Users />,
+    icon: <Users size='20px' />,
   },
   {
     name: 'Attendance',
     link: '/attendance',
-    icon: <CalendarCheck2 />,
+    icon: <CalendarCheck2 size='20px' />,
   },
 ];
 

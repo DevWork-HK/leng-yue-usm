@@ -1,22 +1,23 @@
 import { cn } from '@/helper';
 import User from './User';
 import { ClassValue } from 'clsx';
+import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 type UserListProps = {
   className?: ClassValue;
 };
 
-const UserList = ({ className }: UserListProps) => {
+const UserList = async ({ className }: UserListProps) => {
+  const supabase = createClient(cookies());
+
+  const { data } = await supabase.from('Member').select('*');
+
   return (
     <div className={cn('flex flex-col gap-y-6', className)}>
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
-      <User />
+      {data?.map((user, index) => (
+        <User key={index} />
+      ))}
     </div>
   );
 };
