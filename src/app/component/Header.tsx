@@ -3,8 +3,6 @@
 import Tabs from '@/app/component/Tabs';
 import Tab from '@/app/component/Tab';
 import { usePathname } from 'next/navigation';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import { ReactElement } from 'react';
 
 type TabContent = {
