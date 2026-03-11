@@ -1,22 +1,19 @@
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import Header from './component/Header';
+import "./globals.css";
+import { Noto_Sans_TC, Geist } from "next/font/google";
+import Header from './components/Header';
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+const notoSansTC = Noto_Sans_TC({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-sans-tc",
+  display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: 'User Management System',
-  description: 'User Management System',
-};
 
 export default function RootLayout({
   children,
@@ -25,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased p-x-2`}>
+      <body className={`${geistSans.variable} ${notoSansTC.variable} antialiased p-x-2`}>
         <Header />
         <main>
           <div className='max-w-5xl m-auto p-2'>{children}</div>

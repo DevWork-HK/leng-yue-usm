@@ -1,6 +1,7 @@
-import Button from '@/component/Button';
-import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import UserList from './component/UserList';
+
+import { Button } from '@/components/ui/button';
+import { UserPlus } from 'lucide-react';
+import UserList from './components/UserList';
 
 const UsersPage = () => {
   return (
@@ -9,12 +10,12 @@ const UsersPage = () => {
         <div className='text-3xl font-bold flex flex-nowrap justify-between'>
           Users
           <Button className='text-sm'>
-            <PersonAddOutlinedIcon /> Add User
+            <UserPlus /> Add User
           </Button>
         </div>
       </div>
       <UserList className='mt-8' />
-    </div>
+    </div>  
   );
 };
 

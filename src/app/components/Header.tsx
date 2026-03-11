@@ -1,7 +1,8 @@
 'use client';
 
-import Tabs from '@/app/component/Tabs';
-import Tab from '@/app/component/Tab';
+import Tabs from '@/app/components/Tabs';
+import Tab from '@/app/components/Tab';
+import { Users, CalendarCheck2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ReactElement } from 'react';
 
@@ -13,14 +14,14 @@ type TabContent = {
 
 const TabsContent: TabContent[] = [
   {
-    name: 'Members',
+    name: '試字體',
     link: '/members',
-    icon: <PeopleOutlineIcon />,
+    icon: <Users />,
   },
   {
     name: 'Attendance',
     link: '/attendance',
-    icon: <CalendarMonthIcon />,
+    icon: <CalendarCheck2 />,
   },
 ];
 
