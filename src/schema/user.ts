@@ -1,11 +1,12 @@
-import { CLASS } from "@/constants";
-import * as z from "zod";
+import { CLASS } from '@/constants';
+import * as z from 'zod';
 
 export const userSchema = z.object({
-  name: z.string().min(1, "Name must be at least 1 character."),
+  id: z.string().optional(),
+  name: z.string().min(1, 'Name must be at least 1 character.'),
   class: z.enum(
     CLASS,
-    `Class must be one of the ${Object.values(CLASS).join(", ")}.`,
+    `Class must be one of the ${Object.values(CLASS).join(', ')}.`,
   ),
 });
 

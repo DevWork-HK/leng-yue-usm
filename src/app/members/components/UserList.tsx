@@ -1,8 +1,9 @@
-import { cn } from '@/helper';
 import User from './User';
 import { ClassValue } from 'clsx';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import { UserType } from '@/schema/user';
+import { cn } from '@/lib/utils';
 
 type UserListProps = {
   className?: ClassValue;
@@ -11,12 +12,13 @@ type UserListProps = {
 const UserList = async ({ className }: UserListProps) => {
   const supabase = createClient(cookies());
 
-  const { data } = await supabase.from('Member').select('*');
+  const { data } = await supabase.from('Member').select<'*', UserType>('*');
 
+  console.log(data);
   return (
     <div className={cn('flex flex-col gap-y-6', className)}>
       {data?.map((user, index) => (
-        <User key={index} />
+        <User key={index} user={user} />
       ))}
     </div>
   );

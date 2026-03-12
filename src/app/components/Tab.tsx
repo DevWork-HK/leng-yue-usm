@@ -1,4 +1,4 @@
-import { cn } from '@/helper';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 

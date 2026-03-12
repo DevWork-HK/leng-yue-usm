@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { UserType } from "@/schema/user";
-import { Controller, useForm } from "react-hook-form";
-import { PencilLine } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserType } from '@/schema/user';
+import { Controller, useForm } from 'react-hook-form';
+import { PencilLine } from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/item";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/item';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -21,17 +21,37 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { CLASS } from "@/constants";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Field, FieldGroup } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox';
+import { CLASS } from '@/constants';
+import { getClassName } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-const User = () => {
+type UserProps = {
+  user: UserType;
+};
+
+const User = ({ user }: UserProps) => {
   const form = useForm<UserType>({
     defaultValues: {
-      name: "testing",
-      class: CLASS.TIE_YI,
+      id: user.id,
+      name: user.name,
+      class: user.class,
     },
   });
 
@@ -79,13 +99,25 @@ const User = () => {
                   </Field>
                 )}
               />
+
               <Controller
                 name="class"
                 control={form.control}
                 render={({ field }) => (
                   <Field>
                     <Label htmlFor="edit-form-class">Class</Label>
-                    <Input {...field} id="edit-form-class" />
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger id="edit-form-class">
+                        <SelectValue placeholder="Select a class" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        {Object.entries(CLASS).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {getClassName(value)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </Field>
                 )}
               />
