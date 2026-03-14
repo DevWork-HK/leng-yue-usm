@@ -1,5 +1,7 @@
 import { CLASS, classNameMap } from '@/constants';
 import { clsx, type ClassValue } from 'clsx';
+import { CSSProperties, ReactElement } from 'react';
+import { ExternalToast, toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -15,3 +17,72 @@ export function getClassName(classEnum: CLASS) {
 
   return className;
 }
+
+// Reference style: https://shadcnstudio.com/docs/components/sonner
+function errorToastBox(title: string | ReactElement, data?: ExternalToast) {
+  const toastData: ExternalToast = {
+    position: 'top-center',
+    style: {
+      '--normal-bg':
+        'color-mix(in oklab, var(--destructive) 10%, var(--background))',
+      '--normal-text': 'var(--destructive)',
+      '--normal-border': 'var(--destructive)',
+      ...data?.style,
+    } as CSSProperties,
+    ...data,
+  };
+  toast.error(title, toastData);
+}
+
+function successToastBox(title: string | ReactElement, data?: ExternalToast) {
+  const toastData: ExternalToast = {
+    position: 'top-center',
+    style: {
+      '--normal-bg':
+        'color-mix(in oklab, light-dark(var(--color-green-600), var(--color-green-400)) 10%, var(--background))',
+      '--normal-text':
+        'light-dark(var(--color-green-600), var(--color-green-400))',
+      '--normal-border':
+        'light-dark(var(--color-green-600), var(--color-green-400))',
+      ...data?.style,
+    } as CSSProperties,
+    ...data,
+  };
+  toast.success(title, toastData);
+}
+
+function warningToastBox(title: string | ReactElement, data?: ExternalToast) {
+  const toastData: ExternalToast = {
+    position: 'top-center',
+    style: {
+      '--normal-bg':
+        'color-mix(in oklab, light-dark(var(--color-amber-600), var(--color-amber-400)) 10%, var(--background))',
+      '--normal-text':
+        'light-dark(var(--color-amber-600), var(--color-amber-400))',
+      '--normal-border':
+        'light-dark(var(--color-amber-600), var(--color-amber-400))',
+      ...data?.style,
+    } as CSSProperties,
+    ...data,
+  };
+  toast.warning(title, toastData);
+}
+
+function infoToastBox(title: string | ReactElement, data?: ExternalToast) {
+  const toastData: ExternalToast = {
+    position: 'top-center',
+    style: {
+      '--normal-border': 'black',
+      ...data?.style,
+    } as CSSProperties,
+    ...data,
+  };
+  toast.info(title, toastData);
+}
+
+export const toastBox = {
+  error: errorToastBox,
+  info: infoToastBox,
+  success: successToastBox,
+  warning: warningToastBox,
+};

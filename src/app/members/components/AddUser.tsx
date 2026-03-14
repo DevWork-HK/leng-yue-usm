@@ -21,9 +21,10 @@ import {
 } from '@/components/ui/select';
 import { CLASS } from '@/constants';
 import { createClient } from '@/lib/supabase/client';
-import { getClassName } from '@/lib/utils';
+import { getClassName, toastBox } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserMinus, UserPlus } from 'lucide-react';
+import { useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import {
   object,
@@ -45,6 +46,7 @@ const createUserSchema = object({
         ),
         string().length(0),
       ]),
+      position: string().nonoptional(),
       remark: string().optional(),
     }),
   ),
@@ -53,10 +55,13 @@ const createUserSchema = object({
 type CreateUserType = infer_<typeof createUserSchema>;
 
 const AddUser = () => {
+  const defaultMember = { name: '', class: '', position: '', remark: '' };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { control, handleSubmit, reset } = useForm<CreateUserType>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
-      members: [{ name: '', class: '', remark: '' }],
+      members: [defaultMember],
     },
   });
 
@@ -73,9 +78,10 @@ const AddUser = () => {
         .insert(data.members.filter((member) => member.name && member.class));
 
       if (error) {
-        console.error('Error inserting data:', error);
+        toastBox.error('Testing error toast box');
       } else {
-        console.log('Data inserted successfully');
+        toastBox.success('User created successfully');
+        setDialogOpen(false);
         reset();
       }
     } catch (error) {
@@ -85,7 +91,9 @@ const AddUser = () => {
 
   return (
     <Dialog
+      open={dialogOpen}
       onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
         if (!isOpen) reset();
       }}
     >
@@ -94,7 +102,6 @@ const AddUser = () => {
           <UserPlus /> Add User
         </Button>
       </DialogTrigger>
-
       <DialogContent
         className="w-full max-w-[calc(100%-2rem)] sm:max-w-2xl"
         showCloseButton={false}
@@ -104,20 +111,21 @@ const AddUser = () => {
         </DialogHeader>
 
         <div>
-          <div className="grid grid-cols-6 gap-2 mb-1.5">
-            <FieldLabel className="col-span-2">Name</FieldLabel>
-            <FieldLabel>Class</FieldLabel>
-            <FieldLabel className="col-span-3">Remark</FieldLabel>
+          <div className="flex flex-nowrap gap-2">
+            <FieldLabel className="flex-2">Name</FieldLabel>
+            <FieldLabel className="flex-1">Class</FieldLabel>
+            <FieldLabel className="flex-1">Position</FieldLabel>
+            <FieldLabel className="flex-3">Remark</FieldLabel>
           </div>
           <form id="add-user-form" onSubmit={handleSubmit(onFormSubmit)}>
             <FieldGroup>
               {fields.map((field, index) => (
-                <div key={field.id} className="grid grid-cols-6 gap-2">
+                <div key={field.id} className="flex flex-nowrap gap-2">
                   <Controller
                     name={`members.${index}.name`}
                     control={control}
                     render={({ field }) => (
-                      <Field className="col-span-2">
+                      <Field className="flex-2">
                         <Input {...field} id={`members.${index}.name`} />
                       </Field>
                     )}
@@ -126,7 +134,7 @@ const AddUser = () => {
                     name={`members.${index}.class`}
                     control={control}
                     render={({ field }) => (
-                      <Field>
+                      <Field className="flex-1">
                         <Select {...field} onValueChange={field.onChange}>
                           <SelectTrigger id={`members.${index}.class`}>
                             <SelectValue />
@@ -143,10 +151,19 @@ const AddUser = () => {
                     )}
                   />
                   <Controller
+                    name={`members.${index}.position`}
+                    control={control}
+                    render={({ field }) => (
+                      <Field className="flex-1">
+                        <Input {...field} id={`members.${index}.position`} />
+                      </Field>
+                    )}
+                  />
+                  <Controller
                     name={`members.${index}.remark`}
                     control={control}
                     render={({ field }) => (
-                      <Field className="col-span-3" orientation="horizontal">
+                      <Field className="flex-3" orientation="horizontal">
                         <Input {...field} id={`members.${index}.remark`} />
                         <Button
                           onClick={() => remove(index)}
@@ -161,7 +178,7 @@ const AddUser = () => {
               ))}
             </FieldGroup>
             <Button
-              onClick={() => append({ name: '', class: '', remark: '' })}
+              onClick={() => append(defaultMember)}
               variant="secondary"
               className="mt-2"
             >
