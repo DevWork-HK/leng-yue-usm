@@ -14,7 +14,6 @@ const UserList = async ({ className }: UserListProps) => {
 
   const { data } = await supabase.from('Member').select<'*', UserType>('*');
 
-  console.log(data);
   return (
     <div className={cn('flex flex-col gap-y-6', className)}>
       {data?.map((user, index) => (

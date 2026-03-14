@@ -1,21 +1,17 @@
-
-import { Button } from '@/components/ui/button';
-import { UserPlus } from 'lucide-react';
 import UserList from './components/UserList';
+import AddUser from './components/AddUser';
 
 const UsersPage = () => {
   return (
-    <div className='mt-5'>
+    <div className="mt-5">
       <div>
-        <div className='text-3xl font-bold flex flex-nowrap justify-between'>
+        <div className="text-3xl font-bold flex flex-nowrap justify-between items-center">
           Users
-          <Button className='text-sm'>
-            <UserPlus /> Add User
-          </Button>
+          <AddUser />
         </div>
       </div>
-      <UserList className='mt-8' />
-    </div>  
+      <UserList className="mt-8" />
+    </div>
   );
 };
 

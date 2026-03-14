@@ -1,6 +1,6 @@
 'use client';
 
-import { UserType } from '@/schema/user';
+import { userSchema, UserType } from '@/schema/user';
 import { Controller, useForm } from 'react-hook-form';
 import { PencilLine } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -22,9 +22,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Field, FieldGroup } from '@/components/ui/field';
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { CLASS } from '@/constants';
 import { getClassName } from '@/lib/utils';
 import {
@@ -34,13 +33,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type UserProps = {
   user: UserType;
 };
 
 const User = ({ user }: UserProps) => {
-  const form = useForm<UserType>({
+  const { control, handleSubmit, reset } = useForm<UserType>({
+    resolver: zodResolver(userSchema),
     defaultValues: {
       id: user.id,
       name: user.name,
@@ -49,12 +50,16 @@ const User = ({ user }: UserProps) => {
   });
 
   const onFormSubmit = async (data: UserType) => {
-    console.log(data);
+    console.log('Form Data:', data);
   };
 
   return (
     <div className="flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl">
-      <Dialog>
+      <Dialog
+        onOpenChange={(isOpen) => {
+          if (!isOpen) reset();
+        }}
+      >
         <Item>
           <Avatar size="lg">
             <AvatarFallback>CN</AvatarFallback>
@@ -72,7 +77,7 @@ const User = ({ user }: UserProps) => {
           </ItemActions>
         </Item>
 
-        <form id="user-edit-form" onSubmit={form.handleSubmit(onFormSubmit)}>
+        <form id="user-edit-form" onSubmit={handleSubmit(onFormSubmit)}>
           <DialogContent showCloseButton={false}>
             <DialogHeader>
               <DialogTitle>Edit User</DialogTitle>
@@ -84,10 +89,10 @@ const User = ({ user }: UserProps) => {
             <FieldGroup>
               <Controller
                 name="name"
-                control={form.control}
+                control={control}
                 render={({ field }) => (
                   <Field>
-                    <Label htmlFor="edit-form-name">Name</Label>
+                    <FieldLabel htmlFor="edit-form-name">Name</FieldLabel>
                     <Input {...field} id="edit-form-name" />
                   </Field>
                 )}
@@ -95,10 +100,10 @@ const User = ({ user }: UserProps) => {
 
               <Controller
                 name="class"
-                control={form.control}
+                control={control}
                 render={({ field }) => (
                   <Field>
-                    <Label htmlFor="edit-form-class">Class</Label>
+                    <FieldLabel htmlFor="edit-form-class">Class</FieldLabel>
                     <Select {...field} onValueChange={field.onChange}>
                       <SelectTrigger id="edit-form-class">
                         <SelectValue placeholder="Select a class" />
