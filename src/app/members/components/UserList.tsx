@@ -15,7 +15,7 @@ const UserList = async ({ className }: UserListProps) => {
   const { data } = await supabase.from('Member').select<'*', UserType>('*');
 
   return (
-    <div className={cn('flex flex-col gap-y-6', className)}>
+    <div className={cn('flex flex-col gap-y-5', className)}>
       {data?.map((user, index) => (
         <User key={index} user={user} />
       ))}

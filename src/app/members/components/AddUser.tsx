@@ -110,7 +110,7 @@ const AddUser = () => {
           <DialogTitle>Add User</DialogTitle>
         </DialogHeader>
 
-        <div>
+        <div className="overflow-y-scroll max-h-[50vh]">
           <div className="flex flex-nowrap gap-2">
             <FieldLabel className="flex-2">Name</FieldLabel>
             <FieldLabel className="flex-1">Class</FieldLabel>

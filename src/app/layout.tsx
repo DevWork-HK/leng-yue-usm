@@ -27,7 +27,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${notoSansTC.variable} antialiased p-x-2`}
       >
         <Header />
-        <main>
+        <main className="bg-zinc-50 min-h-screen">
           <div className="max-w-5xl m-auto p-2">{children}</div>
         </main>
         <Toaster />

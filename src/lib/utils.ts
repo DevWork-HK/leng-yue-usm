@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CLASS, classNameMap } from '@/constants';
 import { clsx, type ClassValue } from 'clsx';
 import { CSSProperties, ReactElement } from 'react';
@@ -86,3 +87,23 @@ export const toastBox = {
   success: successToastBox,
   warning: warningToastBox,
 };
+
+type DirtyFields<T> = { [K in keyof T]?: boolean | DirtyFields<T[K]> | null };
+
+export function getDirtyValues<T extends Record<string, any>>(
+  dirtyFields: DirtyFields<T>,
+  values: T,
+): Partial<T> {
+  return Object.entries(dirtyFields).reduce((result, [key, dirty]) => {
+    if (!dirty) return result;
+
+    const value = values[key as keyof T];
+    if (typeof dirty === 'object' && !Array.isArray(dirty)) {
+      // Recurse for nested objects
+      return { ...result, [key]: getDirtyValues(dirty as any, value as any) };
+    }
+
+    // Arrays: send whole if any dirty; primitives: send value
+    return { ...result, [key]: value };
+  }, {} as Partial<T>);
+}
