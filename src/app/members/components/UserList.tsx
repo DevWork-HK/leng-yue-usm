@@ -16,8 +16,8 @@ const UserList = async ({ className }: UserListProps) => {
 
   return (
     <div className={cn('flex flex-col gap-y-5', className)}>
-      {data?.map((user, index) => (
-        <User key={index} user={user} />
+      {data?.map((user) => (
+        <User key={`${user.name}|${user.class}|${user.position}`} user={user} />
       ))}
     </div>
   );

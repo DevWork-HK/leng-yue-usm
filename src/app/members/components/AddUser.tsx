@@ -78,14 +78,15 @@ const AddUser = () => {
         .insert(data.members.filter((member) => member.name && member.class));
 
       if (error) {
-        toastBox.error('Testing error toast box');
+        toastBox.error('User created failed.');
       } else {
-        toastBox.success('User created successfully');
+        toastBox.success('User created successfully.');
         setDialogOpen(false);
         reset();
       }
     } catch (error) {
-      console.error('Expected error while adding user:', error);
+      console.error('Unexpected error while adding user:', error);
+      toastBox.error('User created failed.');
     }
   };
 

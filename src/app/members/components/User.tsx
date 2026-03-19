@@ -23,10 +23,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { CLASS, POSITION } from '@/constants';
-import { getClassName, getDirtyValues } from '@/lib/utils';
+import { getClassName, getDirtyValues, toastBox } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -36,6 +41,11 @@ import {
 } from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { object, string, enum as enum_, infer as infer_ } from 'zod';
+// import { createClient } from '@/lib/supabase/client';
+import { useState } from 'react';
+import { updateUser } from '@/lib/supabase/actions';
+import { useRouter } from 'next/navigation';
+// import { revalidatePath } from 'next/cache';
 
 type UserProps = {
   user: UserType;
@@ -57,6 +67,8 @@ const editUserSchema = object({
 type EditUserType = infer_<typeof editUserSchema>;
 
 const User = ({ user }: UserProps) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -73,15 +85,24 @@ const User = ({ user }: UserProps) => {
   });
 
   const onFormSubmit = async (data: EditUserType) => {
-    const changes = getDirtyValues(dirtyFields, data);
-
-    console.log(changes);
+    try {
+      const changes = getDirtyValues(dirtyFields, data);
+      await updateUser(changes, user.id);
+      setDialogOpen(false);
+      toastBox.success('User updated successfully.');
+      router.refresh();
+    } catch (error) {
+      console.error('Unexpected error while updating user:', error);
+      toastBox.error('User updated failed.');
+    }
   };
 
   return (
     <div className="flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl bg-white">
       <Dialog
+        open={dialogOpen}
         onOpenChange={(isOpen) => {
+          setDialogOpen(isOpen);
           if (!isOpen) reset();
         }}
       >
@@ -129,10 +150,11 @@ const User = ({ user }: UserProps) => {
               <Controller
                 name="name"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { invalid, error } }) => (
                   <Field>
                     <FieldLabel htmlFor="edit-form-name">Name</FieldLabel>
                     <Input {...field} id="edit-form-name" />
+                    {invalid && <FieldError errors={[error]} />}
                   </Field>
                 )}
               />
@@ -140,7 +162,7 @@ const User = ({ user }: UserProps) => {
               <Controller
                 name="class"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { invalid, error } }) => (
                   <Field>
                     <FieldLabel htmlFor="edit-form-class">Class</FieldLabel>
                     <Select {...field} onValueChange={field.onChange}>
@@ -155,6 +177,7 @@ const User = ({ user }: UserProps) => {
                         ))}
                       </SelectContent>
                     </Select>
+                    {invalid && <FieldError errors={[error]} />}
                   </Field>
                 )}
               />
@@ -162,9 +185,11 @@ const User = ({ user }: UserProps) => {
               <Controller
                 name="position"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { invalid, error } }) => (
                   <Field>
-                    <FieldLabel htmlFor="edit-form-position">Class</FieldLabel>
+                    <FieldLabel htmlFor="edit-form-position">
+                      Position
+                    </FieldLabel>
                     <Select {...field} onValueChange={field.onChange}>
                       <SelectTrigger id="edit-form-position">
                         <SelectValue placeholder="Select a position" />
@@ -177,6 +202,7 @@ const User = ({ user }: UserProps) => {
                         ))}
                       </SelectContent>
                     </Select>
+                    {invalid && <FieldError errors={[error]} />}
                   </Field>
                 )}
               />
