@@ -63,6 +63,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 // import { revalidatePath } from 'next/cache';
 
 type UserProps = {
@@ -83,6 +84,44 @@ const editUserSchema = object({
 });
 
 type EditUserType = infer_<typeof editUserSchema>;
+
+const PositionLabel = ({ position }: { position: POSITION }) => {
+  switch (position) {
+    case POSITION.DA_DANG_JIA:
+      return (
+        <Badge className="bg-amber-300 text-white rounded-sm text-[10px]">
+          {getPositionName(position)}
+        </Badge>
+      );
+    case POSITION.ER_DANG_JIA:
+    case POSITION.SAN_DANG_JIA:
+    case POSITION.SI_DANG_JIA:
+    case POSITION.WU_DANG_JIA:
+      return (
+        <Badge className="bg-amber-100 text-black rounded-sm text-[10px]">
+          {getPositionName(position)}
+        </Badge>
+      );
+    case POSITION.RONG_YU_BANG_ZHONG:
+      return (
+        <Badge className="bg-green-500 text-black rounded-sm text-[10px]">
+          {getPositionName(position)}
+        </Badge>
+      );
+    case POSITION.TANG_ZHU:
+      return (
+        <Badge className="bg-blue-400 text-white rounded-sm text-[10px]">
+          {getPositionName(position)}
+        </Badge>
+      );
+    default:
+      return (
+        <Badge className="bg-zinc-200 text-black rounded-sm">
+          {getPositionName(position)}
+        </Badge>
+      );
+  }
+};
 
 const User = ({ user }: UserProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -156,6 +195,9 @@ const User = ({ user }: UserProps) => {
             <ItemContent>
               <ItemTitle>{user.name}</ItemTitle>
               <ItemDescription>{getClassName(user.class)}</ItemDescription>
+            </ItemContent>
+            <ItemContent>
+              <PositionLabel position={user.position} />
             </ItemContent>
             <ItemActions>
               <DialogTrigger asChild>
