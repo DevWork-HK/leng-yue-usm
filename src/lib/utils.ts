@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CLASS, classNameMap } from '@/constants';
+import { CLASS, classNameMap, POSITION, positionNameMap } from '@/constants';
 import { clsx, type ClassValue } from 'clsx';
 import { CSSProperties, ReactElement } from 'react';
 import { ExternalToast, toast } from 'sonner';
@@ -13,10 +13,20 @@ export function getClassName(classEnum: CLASS) {
   const className = classNameMap.get(classEnum);
 
   if (!className) {
-    throw new Error('Class is not allowed.');
+    return '';
   }
 
   return className;
+}
+
+export function getPositionName(positionEnum: POSITION) {
+  const positionName = positionNameMap.get(positionEnum);
+
+  if (!positionName) {
+    return '';
+  }
+
+  return positionName;
 }
 
 // Reference style: https://shadcnstudio.com/docs/components/sonner
@@ -106,4 +116,8 @@ export function getDirtyValues<T extends Record<string, any>>(
     // Arrays: send whole if any dirty; primitives: send value
     return { ...result, [key]: value };
   }, {} as Partial<T>);
+}
+
+export function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

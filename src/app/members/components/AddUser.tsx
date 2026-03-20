@@ -19,11 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CLASS } from '@/constants';
-import { createClient } from '@/lib/supabase/client';
-import { getClassName, toastBox } from '@/lib/utils';
+import { Spinner } from '@/components/ui/spinner';
+import { CLASS, POSITION } from '@/constants';
+import { createUsers } from '@/lib/supabase/actions';
+import { delay, getClassName, getPositionName, toastBox } from '@/lib/utils';
+import { UserType } from '@/schema/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserMinus, UserPlus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import {
@@ -58,6 +61,9 @@ const AddUser = () => {
   const defaultMember = { name: '', class: '', position: '', remark: '' };
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
   const { control, handleSubmit, reset } = useForm<CreateUserType>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -72,21 +78,23 @@ const AddUser = () => {
 
   const onFormSubmit = async (data: CreateUserType) => {
     try {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from('Member')
-        .insert(data.members.filter((member) => member.name && member.class));
+      setLoading(true);
+      await createUsers(
+        data.members.filter(
+          (member) => member.name && member.class,
+        ) as Partial<UserType>[],
+      );
 
-      if (error) {
-        toastBox.error('User created failed.');
-      } else {
-        toastBox.success('User created successfully.');
-        setDialogOpen(false);
-        reset();
-      }
+      router.refresh();
+      await delay(1000);
+      setDialogOpen(false);
+      toastBox.success('User created successfully.');
+      reset();
     } catch (error) {
       console.error('Unexpected error while adding user:', error);
       toastBox.error('User created failed.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,7 +164,18 @@ const AddUser = () => {
                     control={control}
                     render={({ field }) => (
                       <Field className="flex-1">
-                        <Input {...field} id={`members.${index}.position`} />
+                        <Select {...field} onValueChange={field.onChange}>
+                          <SelectTrigger id={`members.${index}.position`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent position="popper">
+                            {Object.entries(POSITION).map(([key, value]) => (
+                              <SelectItem key={key} value={value}>
+                                {getPositionName(value)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </Field>
                     )}
                   />
@@ -194,8 +213,13 @@ const AddUser = () => {
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit" variant="default" form="add-user-form">
-            Add
+          <Button
+            type="submit"
+            variant="default"
+            form="add-user-form"
+            disabled={loading}
+          >
+            {loading ? <Spinner /> : 'Add'}
           </Button>
         </DialogFooter>
       </DialogContent>
