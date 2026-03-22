@@ -55,3 +55,7 @@ export const positionHierarchy = new Map<POSITION, number>([
   [POSITION.FU_TANG_ZHU, 8],
   [POSITION.BANG_ZHONG, 9],
 ]);
+
+export enum EVENT {
+  FIGNT = 'FINGHT',
+}

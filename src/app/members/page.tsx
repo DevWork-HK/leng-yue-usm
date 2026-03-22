@@ -5,8 +5,8 @@ const UsersPage = () => {
   return (
     <div className="mt-5">
       <div>
-        <div className="text-3xl font-bold flex flex-nowrap justify-between items-center">
-          Users
+        <div className="flex flex-nowrap justify-between items-center">
+          <h2 className="font-bold text-2xl">Users</h2>
           <AddUser />
         </div>
       </div>

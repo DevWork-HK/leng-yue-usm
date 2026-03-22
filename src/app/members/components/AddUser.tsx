@@ -145,7 +145,7 @@ const AddUser = () => {
                     render={({ field }) => (
                       <Field className="flex-1">
                         <Select {...field} onValueChange={field.onChange}>
-                          <SelectTrigger id={`members.${index}.class`}>
+                          <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent position="popper">
