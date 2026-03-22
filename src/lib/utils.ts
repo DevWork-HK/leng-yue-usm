@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CLASS, classNameMap, POSITION, positionNameMap } from '@/constants';
+import {
+  CLASS,
+  classNameMap,
+  POSITION,
+  positionHierarchy,
+  positionNameMap,
+} from '@/constants';
 import { clsx, type ClassValue } from 'clsx';
 import { CSSProperties, ReactElement } from 'react';
 import { ExternalToast, toast } from 'sonner';
@@ -27,6 +33,14 @@ export function getPositionName(positionEnum: POSITION) {
   }
 
   return positionName;
+}
+
+export function getPositionHierarchy(positionEnum: POSITION): number {
+  const defaultHierarchy = 999;
+
+  const hierarchy = positionHierarchy.get(positionEnum);
+
+  return hierarchy || defaultHierarchy;
 }
 
 // Reference style: https://shadcnstudio.com/docs/components/sonner

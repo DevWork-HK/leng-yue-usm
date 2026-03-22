@@ -2,7 +2,7 @@
 
 import { UserType } from '@/schema/user';
 import { Controller, useForm } from 'react-hook-form';
-import { PencilLine, Trash2 } from 'lucide-react';
+import { PencilLine, SquarePlus, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Item,
@@ -32,6 +32,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { CLASS, POSITION } from '@/constants';
 import {
+  cn,
   delay,
   getClassName,
   getDirtyValues,
@@ -47,7 +48,6 @@ import {
 } from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { object, string, enum as enum_, infer as infer_ } from 'zod';
-// import { createClient } from '@/lib/supabase/client';
 import { useState } from 'react';
 import { deleteUser, updateUser } from '@/lib/supabase/actions';
 import { useRouter } from 'next/navigation';
@@ -57,14 +57,12 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-// import { revalidatePath } from 'next/cache';
 
 type UserProps = {
   user: UserType;
@@ -88,17 +86,12 @@ type EditUserType = infer_<typeof editUserSchema>;
 const PositionLabel = ({ position }: { position: POSITION }) => {
   switch (position) {
     case POSITION.DA_DANG_JIA:
-      return (
-        <Badge className="bg-amber-300 text-white rounded-sm text-[10px]">
-          {getPositionName(position)}
-        </Badge>
-      );
     case POSITION.ER_DANG_JIA:
     case POSITION.SAN_DANG_JIA:
     case POSITION.SI_DANG_JIA:
     case POSITION.WU_DANG_JIA:
       return (
-        <Badge className="bg-amber-100 text-black rounded-sm text-[10px]">
+        <Badge className="bg-amber-300 text-white rounded-sm text-[10px]">
           {getPositionName(position)}
         </Badge>
       );
@@ -172,8 +165,24 @@ const User = ({ user }: UserProps) => {
     }
   };
 
+  const onAddUserConfirm = async () => {
+    try {
+      await updateUser({ active: true }, user.id);
+      toastBox.success('User added successfully.');
+      router.refresh();
+    } catch (error) {
+      console.error('Unexpected error while adding user:', error);
+      toastBox.error('User added failed.');
+    }
+  };
+
   return (
-    <div className="flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl bg-white">
+    <div
+      className={cn(
+        'flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl bg-white',
+        user.active === false && 'opacity-50',
+      )}
+    >
       <Dialog
         open={dialogOpen}
         onOpenChange={(isOpen) => {
@@ -211,14 +220,25 @@ const User = ({ user }: UserProps) => {
                 </Button>
               </DialogTrigger>
               <AlertDialogTrigger asChild>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="destructive"
-                  className="cursor-pointer bg-white"
-                >
-                  <Trash2 />
-                </Button>
+                {user.active ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="destructive"
+                    className="cursor-pointer bg-white"
+                  >
+                    <Trash2 />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="cursor-pointer text-green-600 hover:bg-green-100 hover:text-green-600"
+                  >
+                    <SquarePlus />
+                  </Button>
+                )}
               </AlertDialogTrigger>
             </ItemActions>
           </Item>
@@ -319,14 +339,14 @@ const User = ({ user }: UserProps) => {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account from our servers.
-              </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onDeleteConfirm}>
+              <AlertDialogAction
+                onClick={
+                  user.active === true ? onDeleteConfirm : onAddUserConfirm
+                }
+              >
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

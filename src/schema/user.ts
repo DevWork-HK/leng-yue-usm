@@ -7,7 +7,7 @@ export const userSchema = object({
   position: enum_(
     POSITION,
     `Class must be one of the ${Object.values(POSITION).join(', ')}.`,
-  ),
+  ).nonoptional(),
   active: boolean(),
   class: enum_(
     CLASS,

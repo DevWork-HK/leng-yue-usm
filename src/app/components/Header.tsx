@@ -16,12 +16,12 @@ const TabsContent: TabContent[] = [
   {
     name: 'Members',
     link: '/members',
-    icon: <Users size='20px' />,
+    icon: <Users size="20px" />,
   },
   {
     name: 'Attendance',
     link: '/attendance',
-    icon: <CalendarCheck2 size='20px' />,
+    icon: <CalendarCheck2 size="20px" />,
   },
 ];
 
@@ -29,14 +29,18 @@ const Header = ({}) => {
   const pathName = usePathname();
 
   return (
-    <header className='w-full shadow-sm'>
-      <div className='max-w-5xl m-auto flex justify-between py-3 px-2'>
-        <div className='flex flex-nowrap gap-x-4'>
-          <div className='text-2xl font-medium'>User Management System</div>
+    <header className="w-full border-b">
+      <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
+        <div className="flex flex-nowrap gap-x-4">
+          <div className="text-2xl font-medium">User Management System</div>
           <div>
             <Tabs>
               {TabsContent.map((tab) => (
-                <Tab isActive={pathName.includes(tab.link)} link={tab.link} key={tab.name}>
+                <Tab
+                  isActive={pathName.includes(tab.link)}
+                  link={tab.link}
+                  key={tab.name}
+                >
                   {tab.icon}
                   {tab.name}
                 </Tab>
@@ -44,7 +48,7 @@ const Header = ({}) => {
             </Tabs>
           </div>
         </div>
-        <div className='flex flex-nowrap items-center'>Logout</div>
+        <div className="flex flex-nowrap items-center">Logout</div>
       </div>
     </header>
   );
