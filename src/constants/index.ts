@@ -57,5 +57,7 @@ export const positionHierarchy = new Map<POSITION, number>([
 ]);
 
 export enum EVENT {
-  FIGNT = 'FINGHT',
+  FIGNT = 'FIGHT',
 }
+
+export const eventNameMap = new Map<EVENT, string>([[EVENT.FIGNT, 'Fight']]);

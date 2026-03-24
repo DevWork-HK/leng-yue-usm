@@ -2,6 +2,8 @@
 import {
   CLASS,
   classNameMap,
+  EVENT,
+  eventNameMap,
   POSITION,
   positionHierarchy,
   positionNameMap,
@@ -41,6 +43,16 @@ export function getPositionHierarchy(positionEnum: POSITION): number {
   const hierarchy = positionHierarchy.get(positionEnum);
 
   return hierarchy || defaultHierarchy;
+}
+
+export function getEventName(eventEnum: EVENT) {
+  const eventName = eventNameMap.get(eventEnum);
+
+  if (!eventName) {
+    return '';
+  }
+
+  return eventName;
 }
 
 // Reference style: https://shadcnstudio.com/docs/components/sonner
