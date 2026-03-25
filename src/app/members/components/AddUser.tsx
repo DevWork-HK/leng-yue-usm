@@ -57,9 +57,9 @@ const createUserSchema = object({
 
 type CreateUserType = infer_<typeof createUserSchema>;
 
-const AddUser = () => {
-  const defaultMember = { name: '', class: '', position: '', remark: '' };
+const defaultMember = { name: '', class: '', position: '', remark: '' };
 
+const AddUser = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -126,7 +126,11 @@ const AddUser = () => {
             <FieldLabel className="flex-1">Position</FieldLabel>
             <FieldLabel className="flex-3">Remark</FieldLabel>
           </div>
-          <form id="add-user-form" onSubmit={handleSubmit(onFormSubmit)} className='p-1'>
+          <form
+            id="add-user-form"
+            onSubmit={handleSubmit(onFormSubmit)}
+            className="p-1"
+          >
             {fields.map((field, index) => (
               <div key={field.id} className="flex flex-nowrap gap-2">
                 <Controller

@@ -20,6 +20,13 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from '@/components/ui/multi-select';
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -33,11 +40,12 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { EVENT } from '@/constants';
-import { getUsers } from '@/lib/supabase/actions';
-import { formatDate, getEventName } from '@/lib/utils';
+import { createEvent, getUsers } from '@/lib/supabase/actions';
+import { delay, formatDate, getEventName, toastBox } from '@/lib/utils';
 import { UserType } from '@/schema/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarDays, CalendarPlus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { infer as _infer, object, string } from 'zod';
@@ -53,37 +61,79 @@ const createEventSchema = object({
   title: string().min(1, 'Event must be at least 1 character.'),
   date: string().nonempty('Date is required.'),
   description: string().optional(),
+  attendees: string()
+    .array()
+    .refine(
+      (items) => {
+        if (!items) return true;
+        return new Set(items).size === items?.length;
+      },
+      { message: 'Items should be unique' },
+    ),
 });
 
 type CreateEventType = _infer<typeof createEventSchema>;
 
 const AddEvent = () => {
+  const [userLoading, setUserLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [activeUsers, setActiveUsers] = useState<UserType[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
+  const router = useRouter();
   const { control, handleSubmit, reset } = useForm<CreateEventType>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
       title: '',
       date: '',
       description: '',
+      attendees: [],
     },
   });
 
   const onFormSubmit = async (data: CreateEventType) => {
     console.log('Form Data:', data);
+    try {
+      setLoading(true);
+
+      const eventData = {
+        ...data,
+        ...(data.title.includes(TITLE_SEPARATOR) && {
+          title: data.title.split(TITLE_SEPARATOR)[1],
+        }),
+      };
+
+      await createEvent(eventData);
+
+      router.refresh();
+      await delay(1000);
+      setDialogOpen(false);
+      toastBox.success('Event created successfully.');
+      reset();
+    } catch (error) {
+      console.error('Unexpected error while creating event:', error);
+      toastBox.error('Event created failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getUsers({ activeOnly: true }).then((users) => {
-      setActiveUsers(users);
-    });
+    getUsers({ activeOnly: true })
+      .then((users) => {
+        setActiveUsers(users);
+      })
+      .finally(() => {
+        setUserLoading(false);
+      });
   }, []);
 
   return (
     <Dialog
+      open={dialogOpen}
       onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
         if (!isOpen) {
           reset();
         }
@@ -200,11 +250,12 @@ const AddEvent = () => {
                       </PopoverTrigger>
                       <PopoverContent className="w-auto" align="start">
                         <Calendar
+                          required
                           mode="single"
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={(date) => {
+                          onSelect={(date: Date) => {
                             field.onChange(date?.toISOString() || '');
                             setDatePickerOpen(false);
                           }}
@@ -214,6 +265,46 @@ const AddEvent = () => {
                         />
                       </PopoverContent>
                     </Popover>
+                    {error && (
+                      <FieldError className="text-sm text-red-500">
+                        {error.message}
+                      </FieldError>
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="attendees"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field className="flex-1">
+                    <FieldLabel>Members</FieldLabel>
+                    <MultiSelect
+                      values={field.value}
+                      onValuesChange={field.onChange}
+                    >
+                      <MultiSelectTrigger>
+                        <MultiSelectValue overflowBehavior="cutoff" />
+                      </MultiSelectTrigger>
+                      <MultiSelectContent
+                        search={{
+                          emptyMessage: 'No users found.',
+                          placeholder: 'Type to search',
+                        }}
+                      >
+                        {userLoading ? (
+                          <Spinner />
+                        ) : (
+                          activeUsers.map((user) => (
+                            <MultiSelectItem key={user.id} value={user.id}>
+                              {user.name}
+                            </MultiSelectItem>
+                          ))
+                        )}
+                      </MultiSelectContent>
+                    </MultiSelect>
+
                     {error && (
                       <FieldError className="text-sm text-red-500">
                         {error.message}

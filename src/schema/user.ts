@@ -1,18 +1,14 @@
 import { CLASS, POSITION } from '@/constants';
-import { object, string, enum as enum_, infer as infer_, boolean } from 'zod';
+import { object, string, enum as _enum, infer as _infer, boolean } from 'zod';
 
 export const userSchema = object({
   id: string().nonempty('ID is required.'),
   name: string().min(1, 'Name must be at least 1 character.'),
-  position: enum_(
-    POSITION,
-    `Class must be one of the ${Object.values(POSITION).join(', ')}.`,
-  ).nonoptional(),
+  created_at: string(),
+  modified_at: string(),
   active: boolean(),
-  class: enum_(
-    CLASS,
-    `Class must be one of the ${Object.values(CLASS).join(', ')}.`,
-  ),
+  position: _enum(POSITION).nonoptional(),
+  class: _enum(CLASS),
 });
 
-export type UserType = infer_<typeof userSchema>;
+export type UserType = _infer<typeof userSchema>;
