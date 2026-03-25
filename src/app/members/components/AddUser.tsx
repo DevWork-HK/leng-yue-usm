@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -112,7 +112,7 @@ const AddUser = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="w-full max-w-[calc(100%-2rem)] sm:max-w-2xl"
+        className="w-full max-w-[calc(100%-2rem)] sm:max-w-3xl"
         showCloseButton={false}
       >
         <DialogHeader>
@@ -120,83 +120,81 @@ const AddUser = () => {
         </DialogHeader>
 
         <div className="overflow-y-scroll max-h-[50vh]">
-          <div className="flex flex-nowrap gap-2">
+          <div className="flex flex-nowrap gap-2 p-1">
             <FieldLabel className="flex-2">Name</FieldLabel>
             <FieldLabel className="flex-1">Class</FieldLabel>
             <FieldLabel className="flex-1">Position</FieldLabel>
             <FieldLabel className="flex-3">Remark</FieldLabel>
           </div>
-          <form id="add-user-form" onSubmit={handleSubmit(onFormSubmit)}>
-            <FieldGroup>
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex flex-nowrap gap-2">
-                  <Controller
-                    name={`members.${index}.name`}
-                    control={control}
-                    render={({ field }) => (
-                      <Field className="flex-2">
-                        <Input {...field} id={`members.${index}.name`} />
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name={`members.${index}.class`}
-                    control={control}
-                    render={({ field }) => (
-                      <Field className="flex-1">
-                        <Select {...field} onValueChange={field.onChange}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent position="popper">
-                            {Object.entries(CLASS).map(([key, value]) => (
-                              <SelectItem key={key} value={value}>
-                                {getClassName(value)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name={`members.${index}.position`}
-                    control={control}
-                    render={({ field }) => (
-                      <Field className="flex-1">
-                        <Select {...field} onValueChange={field.onChange}>
-                          <SelectTrigger id={`members.${index}.position`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent position="popper">
-                            {Object.entries(POSITION).map(([key, value]) => (
-                              <SelectItem key={key} value={value}>
-                                {getPositionName(value)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name={`members.${index}.remark`}
-                    control={control}
-                    render={({ field }) => (
-                      <Field className="flex-3" orientation="horizontal">
-                        <Input {...field} id={`members.${index}.remark`} />
-                        <Button
-                          onClick={() => remove(index)}
-                          variant="destructive"
-                        >
-                          <UserMinus />
-                        </Button>
-                      </Field>
-                    )}
-                  />
-                </div>
-              ))}
-            </FieldGroup>
+          <form id="add-user-form" onSubmit={handleSubmit(onFormSubmit)} className='p-1'>
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex flex-nowrap gap-2">
+                <Controller
+                  name={`members.${index}.name`}
+                  control={control}
+                  render={({ field }) => (
+                    <Field className="flex-2">
+                      <Input {...field} id={`members.${index}.name`} />
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name={`members.${index}.class`}
+                  control={control}
+                  render={({ field }) => (
+                    <Field className="flex-1">
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          {Object.entries(CLASS).map(([key, value]) => (
+                            <SelectItem key={key} value={value}>
+                              {getClassName(value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name={`members.${index}.position`}
+                  control={control}
+                  render={({ field }) => (
+                    <Field className="flex-1">
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          {Object.entries(POSITION).map(([key, value]) => (
+                            <SelectItem key={key} value={value}>
+                              {getPositionName(value)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name={`members.${index}.remark`}
+                  control={control}
+                  render={({ field }) => (
+                    <Field className="flex-3" orientation="horizontal">
+                      <Input {...field} id={`members.${index}.remark`} />
+                      <Button
+                        onClick={() => remove(index)}
+                        variant="destructive"
+                      >
+                        <UserMinus />
+                      </Button>
+                    </Field>
+                  )}
+                />
+              </div>
+            ))}
             <Button
               onClick={() => append(defaultMember)}
               variant="secondary"

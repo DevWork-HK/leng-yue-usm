@@ -1,3 +1,5 @@
+export * from './constants';
+
 export enum CLASS {
   TIE_YI = 'TIE_YI',
   SU_WEN = 'SU_WEN',
@@ -57,7 +59,11 @@ export const positionHierarchy = new Map<POSITION, number>([
 ]);
 
 export enum EVENT {
-  FIGNT = 'FIGHT',
+  FIGHT = 'FIGHT',
+  OTHER = 'OTHER',
 }
 
-export const eventNameMap = new Map<EVENT, string>([[EVENT.FIGNT, 'Fight']]);
+export const eventNameMap = new Map<EVENT, string>([
+  [EVENT.FIGHT, 'Fight'],
+  [EVENT.OTHER, 'Other'],
+]);

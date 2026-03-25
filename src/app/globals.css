@@ -3,8 +3,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --text-default: #000000;
   --background: oklch(1 0 0);

@@ -2,6 +2,7 @@
 import {
   CLASS,
   classNameMap,
+  DATE_ONLY_FORMAT,
   EVENT,
   eventNameMap,
   POSITION,
@@ -12,6 +13,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { CSSProperties, ReactElement } from 'react';
 import { ExternalToast, toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
+import { DateTime } from 'luxon';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -146,4 +148,11 @@ export function getDirtyValues<T extends Record<string, any>>(
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function formatDate(
+  date: Date | string,
+  formatStr: string = DATE_ONLY_FORMAT,
+): string {
+  return DateTime.fromJSDate(new Date(date)).toFormat(formatStr);
 }
