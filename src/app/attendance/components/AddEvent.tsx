@@ -33,10 +33,12 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { EVENT } from '@/constants';
+import { getUsers } from '@/lib/supabase/actions';
 import { formatDate, getEventName } from '@/lib/utils';
+import { UserType } from '@/schema/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarDays, CalendarPlus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { infer as _infer, object, string } from 'zod';
 
@@ -50,12 +52,14 @@ const eventOptions = Object.values(EVENT).map((event) => ({
 const createEventSchema = object({
   title: string().min(1, 'Event must be at least 1 character.'),
   date: string().nonempty('Date is required.'),
+  description: string().optional(),
 });
 
 type CreateEventType = _infer<typeof createEventSchema>;
 
 const AddEvent = () => {
   const [loading, setLoading] = useState(false);
+  const [activeUsers, setActiveUsers] = useState<UserType[]>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const { control, handleSubmit, reset } = useForm<CreateEventType>({
@@ -63,12 +67,19 @@ const AddEvent = () => {
     defaultValues: {
       title: '',
       date: '',
+      description: '',
     },
   });
 
   const onFormSubmit = async (data: CreateEventType) => {
     console.log('Form Data:', data);
   };
+
+  useEffect(() => {
+    getUsers({ activeOnly: true }).then((users) => {
+      setActiveUsers(users);
+    });
+  }, []);
 
   return (
     <Dialog
@@ -142,6 +153,22 @@ const AddEvent = () => {
                       </FieldError>
                     )}
                   </div>
+                )}
+              />
+
+              <Controller
+                name="description"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Field>
+                    <FieldLabel>Description</FieldLabel>
+                    <Input {...field} placeholder="Description" />
+                    {error && (
+                      <FieldError className="text-sm text-red-500">
+                        {error.message}
+                      </FieldError>
+                    )}
+                  </Field>
                 )}
               />
 

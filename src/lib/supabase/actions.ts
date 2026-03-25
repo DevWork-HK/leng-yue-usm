@@ -5,6 +5,10 @@ import { createClient } from './server';
 import { cookies } from 'next/headers';
 import { TABLE_NAMES } from '@/constants/supabase';
 
+type GetUserOptions = {
+  activeOnly?: boolean;
+};
+
 export const createUsers = async (users: Partial<UserType>[]) => {
   const supabase = createClient(cookies());
 
@@ -20,12 +24,15 @@ export const createUsers = async (users: Partial<UserType>[]) => {
   return data;
 };
 
-export const getUsers = async () => {
+export const getUsers = async (options: GetUserOptions = {}) => {
   const supabase = createClient(cookies());
+
+  const { activeOnly } = options;
 
   const { error, data } = await supabase
     .from(TABLE_NAMES.MEMBER)
-    .select<'*', UserType>('*');
+    .select<'*', UserType>('*')
+    .eq('active', activeOnly ? true : undefined);
 
   if (error) {
     throw error;
