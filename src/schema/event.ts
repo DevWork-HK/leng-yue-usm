@@ -1,4 +1,5 @@
 import { object, string, infer as _infer } from 'zod';
+import { UserType } from './user';
 
 export const eventSchema = object({
   id: string().nonempty('ID is required.'),
@@ -11,3 +12,6 @@ export const eventSchema = object({
 });
 
 export type EventType = _infer<typeof eventSchema>;
+export type DetailedEventType = Omit<EventType, 'attendees'> & {
+  attendees: UserType[];
+};

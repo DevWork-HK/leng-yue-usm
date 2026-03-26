@@ -3,7 +3,6 @@
 import { UserType } from '@/schema/user';
 import { Controller, useForm } from 'react-hook-form';
 import { PencilLine, SquarePlus, Trash2 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Item,
   ItemActions,
@@ -63,6 +62,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
+import ClassAvatar from '@/components/custom/ClassAvatar';
 
 type UserProps = {
   user: UserType;
@@ -97,7 +97,7 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
       );
     case POSITION.RONG_YU_BANG_ZHONG:
       return (
-        <Badge className="bg-green-500 text-black rounded-sm text-[10px]">
+        <Badge className="bg-green-500 text-white rounded-sm text-[10px]">
           {getPositionName(position)}
         </Badge>
       );
@@ -109,7 +109,7 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
       );
     default:
       return (
-        <Badge className="bg-zinc-200 text-black rounded-sm">
+        <Badge className="bg-zinc-300 text-white rounded-sm">
           {getPositionName(position)}
         </Badge>
       );
@@ -193,13 +193,7 @@ const User = ({ user }: UserProps) => {
         <AlertDialog>
           <Item>
             <ItemMedia>
-              <Avatar size="lg">
-                <AvatarImage
-                  src={`/images/${user.class.toLocaleUpperCase()}.jpeg`}
-                  className="p-1 object-cover"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+              <ClassAvatar user={user}/>
             </ItemMedia>
             <ItemContent>
               <ItemTitle>{user.name}</ItemTitle>

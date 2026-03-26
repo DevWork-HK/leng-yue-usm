@@ -156,3 +156,7 @@ export function formatDate(
 ): string {
   return DateTime.fromJSDate(new Date(date)).toFormat(formatStr);
 }
+
+export function getAvatarUrl(classEnum: CLASS) {
+  return `/images/${classEnum.toLocaleUpperCase()}.jpeg`;
+}

@@ -30,10 +30,13 @@ export const getUsers = async (options: GetUserOptions = {}) => {
 
   const { activeOnly } = options;
 
-  const { error, data } = await supabase
-    .from(TABLE_NAMES.MEMBER)
-    .select<'*', UserType>('*')
-    .eq('active', activeOnly ? true : undefined);
+  let query = supabase.from(TABLE_NAMES.MEMBER).select<'*', UserType>('*');
+
+  if (activeOnly) {
+    query = query.eq('active', true);
+  }
+
+  const { error, data } = await query;
 
   if (error) {
     throw error;
@@ -49,7 +52,8 @@ export const updateUser = async (changes: Partial<UserType>, id: string) => {
     .from(TABLE_NAMES.MEMBER)
     .update(changes)
     .eq('id', id)
-    .select<'*', UserType>();
+    .select<'*', UserType>()
+    .eq('id', id);
 
   if (error) {
     throw error;
@@ -79,6 +83,20 @@ export const createEvent = async (event: Partial<EventType>) => {
   const { error, data } = await supabase
     .from(TABLE_NAMES.EVENT)
     .insert(event)
+    .select<'*', EventType>('*');
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getEvents = async () => {
+  const supabase = createClient(cookies());
+
+  const { error, data } = await supabase
+    .from(TABLE_NAMES.EVENT)
     .select<'*', EventType>('*');
 
   if (error) {
