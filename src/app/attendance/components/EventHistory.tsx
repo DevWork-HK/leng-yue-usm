@@ -32,7 +32,7 @@ const EventHistory = ({ event }: EventHistoryProps) => {
   };
 
   return (
-    <div className="flex flex-col p-6 bg-white border rounded-[14px] gap-y-8">
+    <div className="flex flex-col p-6 bg-white border rounded-[14px] gap-y-4">
       <Item variant="muted" className="bg-white p-0">
         <ItemContent>
           <ItemTitle className="text-[18px]">{event.title}</ItemTitle>
@@ -45,12 +45,12 @@ const EventHistory = ({ event }: EventHistoryProps) => {
 
       {event.attendees.length > 0 && (
         <div>
-          <h3 className="mb-4">Attendees</h3>
-          <div className="flex flex-col gap-y-3">
+          <h3 className="mb-2">Attendees</h3>
+          <div className="flex flex-col gap-y-2">
             {displayAttendees.map((attendee) => (
               <Item key={attendee.id} variant="muted" className="bg-white p-0">
                 <ItemMedia>
-                  <ClassAvatar user={attendee} />
+                  <ClassAvatar user={attendee} size="sm" />
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>{attendee.name}</ItemTitle>

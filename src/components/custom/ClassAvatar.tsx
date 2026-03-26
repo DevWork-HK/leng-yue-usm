@@ -4,11 +4,12 @@ import { getAvatarUrl } from '@/lib/utils';
 
 type ClassAvatarProps = {
   user: UserType;
+  size?: React.ComponentProps<typeof Avatar>['size'];
 };
 
-const ClassAvatar = ({ user }: ClassAvatarProps) => {
+const ClassAvatar = ({ user, size = 'lg' }: ClassAvatarProps) => {
   return (
-    <Avatar size="lg">
+    <Avatar size={size}>
       <AvatarImage
         src={getAvatarUrl(user.class)}
         className="p-1 object-cover"

@@ -49,6 +49,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { infer as _infer, object, string } from 'zod';
+import { zhHK } from 'react-day-picker/locale';
 
 const TITLE_SEPARATOR = '-';
 
@@ -93,7 +94,6 @@ const AddEvent = () => {
   });
 
   const onFormSubmit = async (data: CreateEventType) => {
-    console.log('Form Data:', data);
     try {
       setLoading(true);
 
@@ -102,6 +102,9 @@ const AddEvent = () => {
         ...(data.title.includes(TITLE_SEPARATOR) && {
           title: data.title.split(TITLE_SEPARATOR)[1],
         }),
+        attendanceRate: Number(
+          (data.attendees.length / activeUsers.length).toFixed(2),
+        ),
       };
 
       await createEvent(eventData);
@@ -250,6 +253,7 @@ const AddEvent = () => {
                       </PopoverTrigger>
                       <PopoverContent className="w-auto" align="start">
                         <Calendar
+                          locale={zhHK}
                           required
                           mode="single"
                           selected={

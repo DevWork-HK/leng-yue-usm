@@ -5,6 +5,7 @@ import { createClient } from './server';
 import { cookies } from 'next/headers';
 import { TABLE_NAMES } from '@/constants/supabase';
 import { EventType } from '@/schema/event';
+import { DateTime } from 'luxon';
 
 type GetUserOptions = {
   activeOnly?: boolean;
@@ -92,12 +93,27 @@ export const createEvent = async (event: Partial<EventType>) => {
   return data;
 };
 
-export const getEvents = async () => {
+type GetEventsOptions = {
+  startTime?: DateTime;
+  endTime?: DateTime;
+};
+
+export const getEvents = async (options?: GetEventsOptions) => {
   const supabase = createClient(cookies());
 
-  const { error, data } = await supabase
-    .from(TABLE_NAMES.EVENT)
-    .select<'*', EventType>('*');
+  const query = supabase.from(TABLE_NAMES.EVENT).select<'*', EventType>('*');
+
+  if (options) {
+    if (options.startTime) {
+      query.gte('date', options.startTime.toUTC().toISO());
+    }
+
+    if (options.endTime) {
+      query.lte('date', options.endTime.toUTC().toISO());
+    }
+  }
+
+  const { error, data } = await query;
 
   if (error) {
     throw error;
