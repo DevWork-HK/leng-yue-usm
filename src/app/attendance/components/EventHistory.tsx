@@ -1,4 +1,7 @@
+'use client';
+
 import ClassAvatar from '@/components/custom/ClassAvatar';
+import { Button } from '@/components/ui/button';
 import {
   Item,
   ItemContent,
@@ -8,12 +11,26 @@ import {
 } from '@/components/ui/item';
 import { formatDate } from '@/lib/utils';
 import { DetailedEventType } from '@/schema/event';
+import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 type EventHistoryProps = {
   event: DetailedEventType;
 };
 
 const EventHistory = ({ event }: EventHistoryProps) => {
+  const [displayAttendees, setDisplayAttendees] = useState(
+    event.attendees.slice(0, 3),
+  );
+
+  const toggleAttendees = () => {
+    if (displayAttendees.length === 3) {
+      setDisplayAttendees(event.attendees);
+    } else {
+      setDisplayAttendees(event.attendees.slice(0, 3));
+    }
+  };
+
   return (
     <div className="flex flex-col p-6 bg-white border rounded-[14px] gap-y-8">
       <Item variant="muted" className="bg-white p-0">
@@ -29,16 +46,25 @@ const EventHistory = ({ event }: EventHistoryProps) => {
       {event.attendees.length > 0 && (
         <div>
           <h3 className="mb-4">Attendees</h3>
-          {event.attendees.map((attendee) => (
-            <Item key={attendee.id} variant="muted" className="bg-white p-0">
-              <ItemMedia>
-                <ClassAvatar user={attendee} />
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>{attendee.name}</ItemTitle>
-              </ItemContent>
-            </Item>
-          ))}
+          <div className="flex flex-col gap-y-3">
+            {displayAttendees.map((attendee) => (
+              <Item key={attendee.id} variant="muted" className="bg-white p-0">
+                <ItemMedia>
+                  <ClassAvatar user={attendee} />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{attendee.name}</ItemTitle>
+                </ItemContent>
+              </Item>
+            ))}
+          </div>
+          <Button variant="ghost" className="w-full" onClick={toggleAttendees}>
+            <ChevronDown
+              className={
+                displayAttendees.length === 3 ? 'rotate-0' : 'rotate-180'
+              }
+            />
+          </Button>
         </div>
       )}
     </div>
