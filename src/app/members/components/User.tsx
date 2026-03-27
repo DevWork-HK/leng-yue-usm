@@ -91,19 +91,19 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
     case POSITION.SI_DANG_JIA:
     case POSITION.WU_DANG_JIA:
       return (
-        <Badge className="bg-amber-300 text-white rounded-sm text-[10px]">
+        <Badge className="bg-amber-200 text-white rounded-sm text-[10px]">
           {getPositionName(position)}
         </Badge>
       );
     case POSITION.RONG_YU_BANG_ZHONG:
       return (
-        <Badge className="bg-green-500 text-white rounded-sm text-[10px]">
+        <Badge className="bg-green-300 text-white rounded-sm text-[10px]">
           {getPositionName(position)}
         </Badge>
       );
     case POSITION.TANG_ZHU:
       return (
-        <Badge className="bg-blue-400 text-white rounded-sm text-[10px]">
+        <Badge className="bg-blue-200 text-white rounded-sm text-[10px]">
           {getPositionName(position)}
         </Badge>
       );
@@ -193,7 +193,7 @@ const User = ({ user }: UserProps) => {
         <AlertDialog>
           <Item>
             <ItemMedia>
-              <ClassAvatar user={user}/>
+              <ClassAvatar user={user} />
             </ItemMedia>
             <ItemContent>
               <ItemTitle>{user.name}</ItemTitle>

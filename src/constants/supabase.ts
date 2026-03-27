@@ -1,4 +1,4 @@
 export enum TABLE_NAMES {
-  MEMBER = 'Member',
-  EVENT = 'Event',
+  MEMBER = 'member',
+  EVENT = 'event',
 }

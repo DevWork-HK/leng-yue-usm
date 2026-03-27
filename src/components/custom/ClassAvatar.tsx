@@ -12,7 +12,7 @@ const ClassAvatar = ({ user, size = 'lg' }: ClassAvatarProps) => {
     <Avatar size={size}>
       <AvatarImage
         src={getAvatarUrl(user.class)}
-        className="p-1 object-cover"
+        className="p-0.5 object-cover"
       />
       <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
     </Avatar>

@@ -32,7 +32,7 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
         <CardTitle>Event Attendance Trend</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="max-h-87.5 w-full">
           <AreaChart
             accessibilityLayer
             data={data}
@@ -55,6 +55,13 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
               content={
                 <ChartTooltipContent
                   labelFormatter={(label) => formatDate(label)}
+                  formatter={(value) => (
+                    <>
+                      <div className="h-2.5 w-2.5 shrink-0 rounded-xs border-chart-1 bg-chart-1" />
+                      <div>Attendance Rate</div>
+                      <div className="font-semibold">{value}%</div>
+                    </>
+                  )}
                   className="w-42.5"
                 />
               }

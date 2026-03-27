@@ -1,6 +1,7 @@
 'use client';
 
 import ClassAvatar from '@/components/custom/ClassAvatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Item,
@@ -36,10 +37,15 @@ const EventHistory = ({ event }: EventHistoryProps) => {
       <Item variant="muted" className="bg-white p-0">
         <ItemContent>
           <ItemTitle className="text-[18px]">{event.title}</ItemTitle>
-          <ItemDescription>{event.description}</ItemDescription>
+          <ItemDescription>{formatDate(event.date)}</ItemDescription>
         </ItemContent>
-        <ItemContent>
-          <ItemTitle>{formatDate(event.date)}</ItemTitle>
+        <ItemContent className="items-end gap-2">
+          <Badge className="bg-blue-100 border-blue-200 text-blue-400 flex-1 w-full flex text-center">
+            {event.totalCount} Total
+          </Badge>
+          <Badge className="bg-green-100 text-green-700 flex-1 w-full border-green-200">
+            {event.attendCount} Joined
+          </Badge>
         </ItemContent>
       </Item>
 
@@ -58,13 +64,20 @@ const EventHistory = ({ event }: EventHistoryProps) => {
               </Item>
             ))}
           </div>
-          <Button variant="ghost" className="w-full" onClick={toggleAttendees}>
-            <ChevronDown
-              className={
-                displayAttendees.length === 3 ? 'rotate-0' : 'rotate-180'
-              }
-            />
-          </Button>
+
+          {displayAttendees.length > 3 && (
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={toggleAttendees}
+            >
+              <ChevronDown
+                className={
+                  displayAttendees.length === 3 ? 'rotate-0' : 'rotate-180'
+                }
+              />
+            </Button>
+          )}
         </div>
       )}
     </div>
