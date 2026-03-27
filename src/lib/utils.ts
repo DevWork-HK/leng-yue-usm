@@ -5,6 +5,7 @@ import {
   DATE_ONLY_FORMAT,
   EVENT,
   eventNameMap,
+  IANA_HK_TIME_ZONE,
   POSITION,
   positionHierarchy,
   positionNameMap,
@@ -154,7 +155,9 @@ export function formatDate(
   date: Date | string,
   formatStr: string = DATE_ONLY_FORMAT,
 ): string {
-  return DateTime.fromJSDate(new Date(date)).toFormat(formatStr);
+  return DateTime.fromJSDate(new Date(date))
+    .setZone(IANA_HK_TIME_ZONE)
+    .toFormat(formatStr);
 }
 
 export function getAvatarUrl(classEnum: CLASS) {

@@ -8,6 +8,8 @@ export const eventSchema = object({
   description: string().optional(),
   attendees: string().array(),
   attendanceRate: number().nonnegative(),
+  attendCount: number().nonnegative(),
+  totalCount: number().nonnegative(),
   createdAt: string(),
   modifiedAt: string(),
 });

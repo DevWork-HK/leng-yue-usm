@@ -16,15 +16,21 @@ const AttendanceStat = async () => {
 
   const events = await getEvents({ startTime: eventsStartTime });
 
+  const graphData = events.map((event) => ({
+    date: event.date,
+    attendanceRate: event.attendanceRate * 100,
+  }));
+
   return (
     <div className="w-full">
+      <p className='text-gray-500 mb-2'>Statistic about event attendance in the past 3 months.</p>
       <div className="flex flex-nowrap gap-x-6 w-full mb-6">
         <Card className="flex-1">
           <CardHeader>
             <CardDescription>Total Events</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center font-extrabold">
-            8
+            {events.length}
           </CardContent>
         </Card>
 
@@ -33,12 +39,13 @@ const AttendanceStat = async () => {
             <CardDescription>Average Attendance Rate</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center text-blue-600 font-extrabold">
-            88%
+            {events.length > 0
+              ? `${Math.round(events.reduce((acc, event) => acc + event.attendanceRate, 0) / events.length)}%`
+              : 'N/A'}
           </CardContent>
         </Card>
       </div>
-
-      <AttendanceTrendChart />
+      <AttendanceTrendChart data={graphData} />
     </div>
   );
 };

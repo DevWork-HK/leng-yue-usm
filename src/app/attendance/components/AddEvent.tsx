@@ -97,14 +97,19 @@ const AddEvent = () => {
     try {
       setLoading(true);
 
+      const attendCount = data.attendees.length;
+      const totalCount = activeUsers.length;
+      const attendanceRate =
+        totalCount > 0 ? Number((attendCount / totalCount).toFixed(2)) : 0;
+
       const eventData = {
         ...data,
         ...(data.title.includes(TITLE_SEPARATOR) && {
           title: data.title.split(TITLE_SEPARATOR)[1],
         }),
-        attendanceRate: Number(
-          (data.attendees.length / activeUsers.length).toFixed(2),
-        ),
+        attendCount,
+        totalCount,
+        attendanceRate,
       };
 
       await createEvent(eventData);
@@ -116,7 +121,7 @@ const AddEvent = () => {
       reset();
     } catch (error) {
       console.error('Unexpected error while creating event:', error);
-      toastBox.error('Event created failed.');
+      toastBox.error('Event creation failed.');
     } finally {
       setLoading(false);
     }

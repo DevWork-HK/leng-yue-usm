@@ -96,6 +96,7 @@ export const createEvent = async (event: Partial<EventType>) => {
 type GetEventsOptions = {
   startTime?: DateTime;
   endTime?: DateTime;
+  order?: 'asc' | 'desc';
 };
 
 export const getEvents = async (options?: GetEventsOptions) => {
@@ -111,6 +112,8 @@ export const getEvents = async (options?: GetEventsOptions) => {
     if (options.endTime) {
       query.lte('date', options.endTime.toUTC().toISO());
     }
+
+    query.order('date', { ascending: options?.order === 'asc' });
   }
 
   const { error, data } = await query;
