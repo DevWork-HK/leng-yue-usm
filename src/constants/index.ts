@@ -9,6 +9,8 @@ export enum CLASS {
   SHEN_XIANG = 'SHEN_XIANG',
   LONG_YIN = 'LONG_YIN',
   JIU_LING = 'JIU_LING',
+  CANG_LAN = 'CANG_LAN',
+  CHAO_GUANG = 'CHAO_GUANG',
 }
 
 export const classNameMap = new Map<CLASS, string>([

@@ -65,7 +65,7 @@ const EventHistory = ({ event }: EventHistoryProps) => {
             ))}
           </div>
 
-          {displayAttendees.length > 3 && (
+          {event.attendees.length > 3 && (
             <Button
               variant="ghost"
               className="w-full"

@@ -160,6 +160,6 @@ export function formatDate(
     .toFormat(formatStr);
 }
 
-export function getAvatarUrl(classEnum: CLASS) {
-  return `/images/${classEnum.toLocaleUpperCase()}.jpeg`;
+export function getAvatarUrl(classEnum: CLASS, inverted = true) {
+  return `/images/${classEnum.toLocaleUpperCase()}${inverted ? '_inverted' : ''}${inverted ? '.jpg' : '.jpeg'}`;
 }

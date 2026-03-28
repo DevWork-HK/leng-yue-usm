@@ -10,6 +10,7 @@ import {
   type ChartConfig,
 } from '@/components/ui/chart';
 import { formatDate } from '@/lib/utils';
+import { TrendingUp } from 'lucide-react';
 
 const chartConfig = {
   attendanceRate: {
@@ -29,7 +30,10 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Event Attendance Trend</CardTitle>
+        <CardTitle>
+          <TrendingUp className="inline stroke-blue-400 mr-2" /> Event
+          Attendance Trend
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="max-h-87.5 w-full">

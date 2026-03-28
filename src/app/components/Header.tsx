@@ -2,7 +2,7 @@
 
 import Tabs from '@/app/components/Tabs';
 import Tab from '@/app/components/Tab';
-import { Users, CalendarCheck2 } from 'lucide-react';
+import { Users, CalendarCheck2, PartyPopper } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ReactElement } from 'react';
 
@@ -22,6 +22,11 @@ const TabsContent: TabContent[] = [
     name: 'Attendance',
     link: '/attendance',
     icon: <CalendarCheck2 size="20px" />,
+  },
+  {
+    name: 'Lucky Draw',
+    link: '/lucky-draw',
+    icon: <PartyPopper size="20px" />,
   },
 ];
 
