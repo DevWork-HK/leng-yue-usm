@@ -107,7 +107,7 @@ const AddUser = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-sm">
+        <Button size='xl'>
           <UserPlus /> Add User
         </Button>
       </DialogTrigger>

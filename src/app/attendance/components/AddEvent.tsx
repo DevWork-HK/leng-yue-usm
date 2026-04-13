@@ -148,7 +148,7 @@ const AddEvent = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-sm">
+        <Button size="xl">
           <CalendarPlus /> Add Event
         </Button>
       </DialogTrigger>

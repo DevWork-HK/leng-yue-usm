@@ -1,7 +1,13 @@
-import React from 'react';
+import LuckyDrawEvent from './components/LuckyDrawEvent';
+import LuckyDrawHistory from './components/LuckyDrawHistory';
 
 const LuckyDraw = () => {
-  return <div>LuckyDraw</div>;
+  return (
+    <div>
+      <LuckyDrawEvent />
+      <LuckyDrawHistory />
+    </div>
+  );
 };
 
 export default LuckyDraw;

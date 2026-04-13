@@ -94,8 +94,8 @@ export const createEvent = async (event: Partial<EventType>) => {
 };
 
 type GetEventsOptions = {
-  startTime?: DateTime;
-  endTime?: DateTime;
+  startTime?: DateTime | string;
+  endTime?: DateTime | string;
   order?: 'asc' | 'desc';
 };
 
@@ -106,11 +106,19 @@ export const getEvents = async (options?: GetEventsOptions) => {
 
   if (options) {
     if (options.startTime) {
-      query.gte('date', options.startTime.toUTC().toISO());
+      const startTime =
+        typeof options.startTime === 'string'
+          ? DateTime.fromISO(options.startTime)
+          : options.startTime;
+      query.gte('date', startTime.toUTC().toISO());
     }
 
     if (options.endTime) {
-      query.lte('date', options.endTime.toUTC().toISO());
+      const endTime =
+        typeof options.endTime === 'string'
+          ? DateTime.fromISO(options.endTime)
+          : options.endTime;
+      query.lte('date', endTime.toUTC().toISO());
     }
 
     query.order('date', { ascending: options?.order === 'asc' });
