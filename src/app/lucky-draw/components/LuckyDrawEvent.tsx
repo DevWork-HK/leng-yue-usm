@@ -13,17 +13,18 @@ import { intersection } from 'lodash';
 import { FULL_MONTH_FORMAT, IANA_HK_TIME_ZONE } from '@/constants';
 import { createLuckyDraw, getEvents, getMembers } from '@/lib/supabase/actions';
 import { DateTime } from 'luxon';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
-import { cn, drawItemsFromArray, toastBox } from '@/lib/utils';
+import { drawItemsFromArray, toastBox } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CalendarFold, Trophy, Users } from 'lucide-react';
 import { memberSchema, MemberType } from '@/schema/member';
 import ClassAvatar from '@/components/custom/ClassAvatar';
-import { ClassValue } from 'clsx';
 import { object, string, infer as _infer, array, number } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import SectionBlock from './SectionBlock';
+import DrawResultItem from './DrawResultItem';
 
 const currentDate = DateTime.local({ zone: IANA_HK_TIME_ZONE }).startOf(
   'month',
@@ -37,20 +38,6 @@ const eventOptions = Array.from({ length: 6 }).map((_, index) => {
   };
 });
 
-const SectionBlock = ({
-  children,
-  className,
-}: PropsWithChildren<{ className?: ClassValue }>) => (
-  <div
-    className={cn(
-      'px-6 py-8 border rounded-[14px] bg-white flex flex-col gap-y-6',
-      className,
-    )}
-  >
-    {children}
-  </div>
-);
-
 const createLuckyDrawSchema = object({
   event: string().min(1, 'Event must be at least 1 character.'),
   eligibleMembers: memberSchema.array(),
@@ -60,54 +47,14 @@ const createLuckyDrawSchema = object({
       priority: number()
         .int()
         .nonnegative('Priority must be a non-negative integer.'),
-      winner: array(
+      winners: array(
         string().min(1, 'Winner name must be at least 1 character.'),
       ).min(1, 'There must be at least one winner.'),
     }),
   ),
 });
 
-type CreateLuckyDrawType = _infer<typeof createLuckyDrawSchema>;
-
-const DrawResultItem = ({
-  member,
-  result,
-}: {
-  member: MemberType;
-  result: CreateLuckyDrawType['result'][number];
-}) => {
-  return (
-    <div
-      className={cn(
-        'flex gap-8 border-2 rounded-lg p-6 items-center',
-        result.priority === 1
-          ? 'bg-yellow-100 border-yellow-400'
-          : 'bg-gray-200 border-gray-400',
-      )}
-    >
-      <Trophy
-        size={32}
-        className={cn(
-          result.priority === 1 ? 'text-yellow-500' : 'text-gray-600',
-        )}
-      />
-      <div className="flex items-center gap-4">
-        <ClassAvatar member={member} />
-        <div>{member.name}</div>
-      </div>
-      <div
-        className={cn(
-          'ml-auto rounded-lg p-2 font-medium',
-          result.priority === 1
-            ? 'border-yellow-500 text-yellow-700'
-            : 'border border-gray-400 text-gray-700',
-        )}
-      >
-        {result.name}
-      </div>
-    </div>
-  );
-};
+export type CreateLuckyDrawType = _infer<typeof createLuckyDrawSchema>;
 
 const LuckyDrawEvent = () => {
   const [loading, setLoading] = useState(false);
@@ -204,7 +151,7 @@ const LuckyDrawEvent = () => {
         {
           name: 'full-attendance bonus',
           priority: 5,
-          winner: drawn.map((winner) => winner.id),
+          winners: drawn.map((winner) => winner.id),
         },
       ];
 
@@ -214,7 +161,7 @@ const LuckyDrawEvent = () => {
         result.push({
           name: 'grand prize',
           priority: 1,
-          winner: grandPrizeWinners.map((winner) => winner.id),
+          winners: grandPrizeWinners.map((winner) => winner.id),
         });
       }
 
@@ -275,7 +222,9 @@ const LuckyDrawEvent = () => {
                 type="submit"
                 size="lg"
                 form="lucky-draw-form"
-                disabled={loading || !selectedEvent}
+                disabled={
+                  loading || !selectedEvent || eligibleMembers.length === 0
+                }
               >
                 Run Lucky Draw
               </Button>
@@ -348,7 +297,7 @@ const LuckyDrawEvent = () => {
             Lucky Draw Result
           </h3>
           {luckDrawResult.map((result) => {
-            return result.winner.map((winnerId) => {
+            return result.winners.map((winnerId) => {
               const winner = eligibleMembers.find(
                 (member) => member.id === winnerId,
               );

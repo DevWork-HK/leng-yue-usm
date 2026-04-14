@@ -5,7 +5,7 @@ const LuckyDraw = () => {
   return (
     <div>
       <LuckyDrawEvent />
-      <LuckyDrawHistory />
+      <LuckyDrawHistory className="mt-7"/>
     </div>
   );
 };
