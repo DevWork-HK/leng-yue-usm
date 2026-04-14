@@ -10,7 +10,8 @@ import {
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item';
-import { formatDate } from '@/lib/utils';
+import { EVENT } from '@/constants';
+import { formatDate, getEventName } from '@/lib/utils';
 import { DetailedEventType } from '@/schema/event';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
@@ -19,16 +20,18 @@ type EventHistoryProps = {
   event: DetailedEventType;
 };
 
+const DEFAULT_SHOW_NUMBER = 12;
+
 const EventHistory = ({ event }: EventHistoryProps) => {
   const [displayAttendees, setDisplayAttendees] = useState(
-    event.attendees.slice(0, 3),
+    event.attendees.slice(0, DEFAULT_SHOW_NUMBER),
   );
 
   const toggleAttendees = () => {
-    if (displayAttendees.length === 3) {
+    if (displayAttendees.length === DEFAULT_SHOW_NUMBER) {
       setDisplayAttendees(event.attendees);
     } else {
-      setDisplayAttendees(event.attendees.slice(0, 3));
+      setDisplayAttendees(event.attendees.slice(0, DEFAULT_SHOW_NUMBER));
     }
   };
 
@@ -36,7 +39,9 @@ const EventHistory = ({ event }: EventHistoryProps) => {
     <div className="flex flex-col p-6 bg-white border rounded-[14px] gap-y-4">
       <Item variant="muted" className="bg-white p-0">
         <ItemContent>
-          <ItemTitle className="text-[18px]">{event.title}</ItemTitle>
+          <ItemTitle className="text-[18px]">
+            {getEventName(event.title as EVENT) || event.title}
+          </ItemTitle>
           <ItemDescription>{formatDate(event.date)}</ItemDescription>
         </ItemContent>
         <ItemContent className="items-end gap-2">
@@ -52,9 +57,9 @@ const EventHistory = ({ event }: EventHistoryProps) => {
       {event.attendees.length > 0 && (
         <div>
           <h3 className="mb-2">Attendees</h3>
-          <div className="flex flex-col gap-y-2">
+          <div className="grid grid-cols-4 gap-2">
             {displayAttendees.map((attendee) => (
-              <Item key={attendee.id} variant="muted" className="bg-white p-0">
+              <Item key={attendee.id} variant="outline" className="bg-white">
                 <ItemMedia>
                   <ClassAvatar member={attendee} size="sm" />
                 </ItemMedia>
@@ -65,7 +70,7 @@ const EventHistory = ({ event }: EventHistoryProps) => {
             ))}
           </div>
 
-          {event.attendees.length > 3 && (
+          {event.attendees.length > DEFAULT_SHOW_NUMBER && (
             <Button
               variant="ghost"
               className="w-full"
@@ -73,7 +78,9 @@ const EventHistory = ({ event }: EventHistoryProps) => {
             >
               <ChevronDown
                 className={
-                  displayAttendees.length === 3 ? 'rotate-0' : 'rotate-180'
+                  displayAttendees.length === DEFAULT_SHOW_NUMBER
+                    ? 'rotate-0'
+                    : 'rotate-180'
                 }
               />
             </Button>

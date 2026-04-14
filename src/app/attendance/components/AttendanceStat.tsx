@@ -16,10 +16,16 @@ const AttendanceStat = async () => {
 
   const events = await getEvents({ startTime: eventsStartTime });
 
-  const graphData = events.map((event) => ({
-    date: event.date,
-    attendanceRate: event.attendanceRate * 100,
-  }));
+  const graphData = events
+    .map((event) => ({
+      date: event.date,
+      attendanceRate: event.attendanceRate * 100,
+    }))
+    .sort((a, b) =>
+      DateTime.fromISO(a.date)
+        .diff(DateTime.fromISO(b.date))
+        .get('milliseconds'),
+    );
 
   return (
     <div className="w-full">

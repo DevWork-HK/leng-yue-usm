@@ -61,11 +61,11 @@ export const positionHierarchy = new Map<POSITION, number>([
 ]);
 
 export enum EVENT {
-  FIGHT = 'FIGHT',
+  CLAN_WAR = 'CLAN_WAR',
   OTHER = 'OTHER',
 }
 
 export const eventNameMap = new Map<EVENT, string>([
-  [EVENT.FIGHT, 'Fight'],
-  [EVENT.OTHER, 'Other'],
+  [EVENT.CLAN_WAR, '幫會聯賽'],
+  [EVENT.OTHER, '其他'],
 ]);

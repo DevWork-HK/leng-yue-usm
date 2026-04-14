@@ -129,7 +129,7 @@ const AddMember = () => {
           <form
             id="add-member-form"
             onSubmit={handleSubmit(onFormSubmit)}
-            className="p-1"
+            className="p-1 flex flex-col gap-y-2"
           >
             {fields.map((field, index) => (
               <div key={field.id} className="flex flex-nowrap gap-2">
