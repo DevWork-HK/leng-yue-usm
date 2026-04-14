@@ -1,6 +1,6 @@
 'use client';
 
-import { UserType } from '@/schema/user';
+import { MemberType } from '@/schema/member';
 import { Controller, useForm } from 'react-hook-form';
 import { PencilLine, SquarePlus, Trash2 } from 'lucide-react';
 import {
@@ -48,7 +48,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { object, string, enum as enum_, infer as infer_ } from 'zod';
 import { useState } from 'react';
-import { deleteUser, updateUser } from '@/lib/supabase/actions';
+import { deleteMember, updateMember } from '@/lib/supabase/actions';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/spinner';
 import {
@@ -64,11 +64,11 @@ import {
 import { Badge } from '@/components/ui/badge';
 import ClassAvatar from '@/components/custom/ClassAvatar';
 
-type UserProps = {
-  user: UserType;
+type MemberProps = {
+  member: MemberType;
 };
 
-const editUserSchema = object({
+const editMemberSchema = object({
   id: string().nonoptional(),
   name: string().min(1, 'Name must be at least 1 character.'),
   position: enum_(
@@ -81,7 +81,7 @@ const editUserSchema = object({
   ),
 });
 
-type EditUserType = infer_<typeof editUserSchema>;
+type EditMemberType = infer_<typeof editMemberSchema>;
 
 const PositionLabel = ({ position }: { position: POSITION }) => {
   switch (position) {
@@ -116,7 +116,7 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
   }
 };
 
-const User = ({ user }: UserProps) => {
+const Member = ({ member }: MemberProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -126,29 +126,29 @@ const User = ({ user }: UserProps) => {
     handleSubmit,
     reset,
     formState: { dirtyFields },
-  } = useForm<EditUserType>({
-    resolver: zodResolver(editUserSchema),
+  } = useForm<EditMemberType>({
+    resolver: zodResolver(editMemberSchema),
     defaultValues: {
-      id: user.id,
-      name: user.name,
-      class: user.class,
-      position: user.position,
+      id: member.id,
+      name: member.name,
+      class: member.class,
+      position: member.position,
     },
   });
 
-  const onFormSubmit = async (data: EditUserType) => {
+  const onFormSubmit = async (data: EditMemberType) => {
     try {
       setLoading(true);
       const changes = getDirtyValues(dirtyFields, data);
-      await updateUser(changes, user.id);
+      await updateMember(changes, member.id);
       router.refresh();
 
       await delay(1000);
       setDialogOpen(false);
-      toastBox.success('User updated successfully.');
+      toastBox.success('Member updated successfully.');
     } catch (error) {
-      console.error('Unexpected error while updating user:', error);
-      toastBox.error('User updated failed.');
+      console.error('Unexpected error while updating member:', error);
+      toastBox.error('Member update failed.');
     } finally {
       setLoading(false);
     }
@@ -156,23 +156,23 @@ const User = ({ user }: UserProps) => {
 
   const onDeleteConfirm = async () => {
     try {
-      await deleteUser([user.id]);
-      toastBox.success('User delete successfully.');
+      await deleteMember([member.id]);
+      toastBox.success('Member deleted successfully.');
       router.refresh();
     } catch (error) {
-      console.error('Unexpected error while deleting user:', error);
-      toastBox.error('User delete failed.');
+      console.error('Unexpected error while deleting member:', error);
+      toastBox.error('Member delete failed.');
     }
   };
 
-  const onAddUserConfirm = async () => {
+  const onAddMemberConfirm = async () => {
     try {
-      await updateUser({ active: true }, user.id);
-      toastBox.success('User added successfully.');
+      await updateMember({ active: true }, member.id);
+      toastBox.success('Member added successfully.');
       router.refresh();
     } catch (error) {
-      console.error('Unexpected error while adding user:', error);
-      toastBox.error('User added failed.');
+      console.error('Unexpected error while adding member:', error);
+      toastBox.error('Member added failed.');
     }
   };
 
@@ -180,7 +180,7 @@ const User = ({ user }: UserProps) => {
     <div
       className={cn(
         'flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl bg-white',
-        user.active === false && 'opacity-50',
+        member.active === false && 'opacity-50',
       )}
     >
       <Dialog
@@ -193,14 +193,14 @@ const User = ({ user }: UserProps) => {
         <AlertDialog>
           <Item>
             <ItemMedia>
-              <ClassAvatar user={user} />
+              <ClassAvatar member={member} />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>{user.name}</ItemTitle>
-              <ItemDescription>{getClassName(user.class)}</ItemDescription>
+              <ItemTitle>{member.name}</ItemTitle>
+              <ItemDescription>{getClassName(member.class)}</ItemDescription>
             </ItemContent>
             <ItemContent>
-              <PositionLabel position={user.position} />
+              <PositionLabel position={member.position} />
             </ItemContent>
             <ItemActions>
               <DialogTrigger asChild>
@@ -214,7 +214,7 @@ const User = ({ user }: UserProps) => {
                 </Button>
               </DialogTrigger>
               <AlertDialogTrigger asChild>
-                {user.active ? (
+                {member.active ? (
                   <Button
                     type="button"
                     size="icon"
@@ -239,15 +239,15 @@ const User = ({ user }: UserProps) => {
 
           <DialogContent showCloseButton={false}>
             <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
+              <DialogTitle>Edit Member</DialogTitle>
               <DialogDescription>
-                Update User Information. Click &quot;Submit&quot; to save
+                Update Member Information. Click &quot;Submit&quot; to save
                 changes.
               </DialogDescription>
             </DialogHeader>
 
             <form
-              id={`user-edit-form-${user.id}`}
+              id={`member-edit-form-${member.id}`}
               onSubmit={handleSubmit(onFormSubmit)}
             >
               <FieldGroup>
@@ -322,7 +322,7 @@ const User = ({ user }: UserProps) => {
               <Button
                 type="submit"
                 variant="default"
-                form={`user-edit-form-${user.id}`}
+                form={`member-edit-form-${member.id}`}
                 disabled={loading}
               >
                 {loading ? <Spinner /> : 'Submit'}
@@ -338,7 +338,7 @@ const User = ({ user }: UserProps) => {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={
-                  user.active === true ? onDeleteConfirm : onAddUserConfirm
+                  member.active === true ? onDeleteConfirm : onAddMemberConfirm
                 }
               >
                 Continue
@@ -351,4 +351,4 @@ const User = ({ user }: UserProps) => {
   );
 };
 
-export default User;
+export default Member;

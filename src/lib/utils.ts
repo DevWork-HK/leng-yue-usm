@@ -163,3 +163,17 @@ export function formatDate(
 export function getAvatarUrl(classEnum: CLASS, inverted = true) {
   return `/images/${classEnum.toLocaleUpperCase()}${inverted ? '_inverted' : ''}${inverted ? '.jpg' : '.jpeg'}`;
 }
+
+export function drawItemsFromArray<T>(
+  array: T[],
+  count: number,
+): { drawn: T[]; remaining: T[] } {
+  if (count >= array.length) {
+    return { drawn: array, remaining: [] };
+  }
+
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
+  const drawn = shuffled.slice(0, count);
+  const remaining = shuffled.slice(count);
+  return { drawn, remaining };
+}

@@ -40,9 +40,9 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { EVENT } from '@/constants';
-import { createEvent, getUsers } from '@/lib/supabase/actions';
+import { createEvent, getMembers } from '@/lib/supabase/actions';
 import { delay, formatDate, getEventName, toastBox } from '@/lib/utils';
-import { UserType } from '@/schema/user';
+import { MemberType } from '@/schema/member';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarDays, CalendarPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -76,9 +76,9 @@ const createEventSchema = object({
 type CreateEventType = _infer<typeof createEventSchema>;
 
 const AddEvent = () => {
-  const [userLoading, setUserLoading] = useState(true);
+  const [memberLoading, setMemberLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [activeUsers, setActiveUsers] = useState<UserType[]>([]);
+  const [activeMembers, setActiveMembers] = useState<MemberType[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
@@ -98,7 +98,7 @@ const AddEvent = () => {
       setLoading(true);
 
       const attendCount = data.attendees.length;
-      const totalCount = activeUsers.length;
+      const totalCount = activeMembers.length;
       const attendanceRate =
         totalCount > 0 ? Number((attendCount / totalCount).toFixed(2)) : 0;
 
@@ -128,12 +128,12 @@ const AddEvent = () => {
   };
 
   useEffect(() => {
-    getUsers({ activeOnly: true })
-      .then((users) => {
-        setActiveUsers(users);
+    getMembers({ activeOnly: true })
+      .then((members) => {
+        setActiveMembers(members);
       })
       .finally(() => {
-        setUserLoading(false);
+        setMemberLoading(false);
       });
   }, []);
 
@@ -298,16 +298,16 @@ const AddEvent = () => {
                       </MultiSelectTrigger>
                       <MultiSelectContent
                         search={{
-                          emptyMessage: 'No users found.',
+                          emptyMessage: 'No members found.',
                           placeholder: 'Type to search',
                         }}
                       >
-                        {userLoading ? (
+                        {memberLoading ? (
                           <Spinner />
                         ) : (
-                          activeUsers.map((user) => (
-                            <MultiSelectItem key={user.id} value={user.id}>
-                              {user.name}
+                          activeMembers.map((member) => (
+                            <MultiSelectItem key={member.id} value={member.id}>
+                              {member.name}
                             </MultiSelectItem>
                           ))
                         )}

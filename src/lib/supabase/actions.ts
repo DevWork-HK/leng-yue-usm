@@ -1,23 +1,24 @@
 'use server';
 
-import { UserType } from '@/schema/user';
+import { MemberType } from '@/schema/member';
 import { createClient } from './server';
 import { cookies } from 'next/headers';
 import { TABLE_NAMES } from '@/constants/supabase';
 import { EventType } from '@/schema/event';
 import { DateTime } from 'luxon';
+import { LuckyDrawType } from '@/schema/luckyDraw';
 
-type GetUserOptions = {
+type GetMemberOptions = {
   activeOnly?: boolean;
 };
 
-export const createUsers = async (users: Partial<UserType>[]) => {
+export const createMembers = async (members: Partial<MemberType>[]) => {
   const supabase = createClient(cookies());
 
   const { error, data } = await supabase
     .from(TABLE_NAMES.MEMBER)
-    .insert(users)
-    .select<'*', UserType>('*');
+    .insert(members)
+    .select<'*', MemberType>('*');
 
   if (error) {
     throw error;
@@ -26,12 +27,12 @@ export const createUsers = async (users: Partial<UserType>[]) => {
   return data;
 };
 
-export const getUsers = async (options: GetUserOptions = {}) => {
+export const getMembers = async (options: GetMemberOptions = {}) => {
   const supabase = createClient(cookies());
 
   const { activeOnly } = options;
 
-  let query = supabase.from(TABLE_NAMES.MEMBER).select<'*', UserType>('*');
+  let query = supabase.from(TABLE_NAMES.MEMBER).select<'*', MemberType>('*');
 
   if (activeOnly) {
     query = query.eq('active', true);
@@ -46,14 +47,17 @@ export const getUsers = async (options: GetUserOptions = {}) => {
   return data;
 };
 
-export const updateUser = async (changes: Partial<UserType>, id: string) => {
+export const updateMember = async (
+  changes: Partial<MemberType>,
+  id: string,
+) => {
   const supabase = createClient(cookies());
 
   const { error, data } = await supabase
     .from(TABLE_NAMES.MEMBER)
     .update(changes)
     .eq('id', id)
-    .select<'*', UserType>()
+    .select<'*', MemberType>()
     .eq('id', id);
 
   if (error) {
@@ -63,7 +67,7 @@ export const updateUser = async (changes: Partial<UserType>, id: string) => {
   return data;
 };
 
-export const deleteUser = async (ids: string[]) => {
+export const deleteMember = async (ids: string[]) => {
   const supabase = createClient(cookies());
 
   const { error, data } = await supabase
@@ -125,6 +129,21 @@ export const getEvents = async (options?: GetEventsOptions) => {
   }
 
   const { error, data } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const createLuckyDraw = async (event: Partial<LuckyDrawType>) => {
+  const supabase = createClient(cookies());
+
+  const { error, data } = await supabase
+    .from(TABLE_NAMES.LUCKY_DRAW)
+    .insert(event)
+    .select<'*', LuckyDrawType>('*');
 
   if (error) {
     throw error;

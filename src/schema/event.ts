@@ -1,5 +1,5 @@
 import { object, string, infer as _infer, number } from 'zod';
-import { UserType } from './user';
+import { MemberType } from './member';
 
 export const eventSchema = object({
   id: string().nonempty('ID is required.'),
@@ -16,5 +16,5 @@ export const eventSchema = object({
 
 export type EventType = _infer<typeof eventSchema>;
 export type DetailedEventType = Omit<EventType, 'attendees'> & {
-  attendees: UserType[];
+  attendees: MemberType[];
 };

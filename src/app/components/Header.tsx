@@ -37,7 +37,7 @@ const Header = ({}) => {
     <header className="w-full border-b">
       <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
         <div className="flex flex-nowrap gap-x-4">
-          <div className="text-2xl font-medium">User Management System</div>
+          <div className="text-2xl font-medium">Member Management System</div>
           <div>
             <Tabs>
               {TabsContent.map((tab) => (

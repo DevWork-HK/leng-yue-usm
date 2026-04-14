@@ -21,9 +21,9 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { CLASS, POSITION } from '@/constants';
-import { createUsers } from '@/lib/supabase/actions';
+import { createMembers } from '@/lib/supabase/actions';
 import { delay, getClassName, getPositionName, toastBox } from '@/lib/utils';
-import { UserType } from '@/schema/user';
+import { MemberType } from '@/schema/member';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserMinus, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -38,7 +38,7 @@ import {
   infer as infer_,
 } from 'zod';
 
-const createUserSchema = object({
+const createMemberSchema = object({
   members: array(
     object({
       name: string().min(1, 'Name must be at least 1 character.'),
@@ -55,17 +55,17 @@ const createUserSchema = object({
   ),
 });
 
-type CreateUserType = infer_<typeof createUserSchema>;
+type CreateMemberType = infer_<typeof createMemberSchema>;
 
 const defaultMember = { name: '', class: '', position: '', remark: '' };
 
-const AddUser = () => {
+const AddMember = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { control, handleSubmit, reset } = useForm<CreateUserType>({
-    resolver: zodResolver(createUserSchema),
+  const { control, handleSubmit, reset } = useForm<CreateMemberType>({
+    resolver: zodResolver(createMemberSchema),
     defaultValues: {
       members: [defaultMember],
     },
@@ -76,23 +76,23 @@ const AddUser = () => {
     name: 'members',
   });
 
-  const onFormSubmit = async (data: CreateUserType) => {
+  const onFormSubmit = async (data: CreateMemberType) => {
     try {
       setLoading(true);
-      await createUsers(
+      await createMembers(
         data.members.filter(
           (member) => member.name && member.class,
-        ) as Partial<UserType>[],
+        ) as Partial<MemberType>[],
       );
 
       router.refresh();
       await delay(1000);
       setDialogOpen(false);
-      toastBox.success('User created successfully.');
+      toastBox.success('Member created successfully.');
       reset();
     } catch (error) {
-      console.error('Unexpected error while adding user:', error);
-      toastBox.error('User created failed.');
+      console.error('Unexpected error while adding member:', error);
+      toastBox.error('Member creation failed.');
     } finally {
       setLoading(false);
     }
@@ -107,8 +107,8 @@ const AddUser = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size='xl'>
-          <UserPlus /> Add User
+        <Button size="xl">
+          <UserPlus /> Add Member
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -116,7 +116,7 @@ const AddUser = () => {
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle>Add User</DialogTitle>
+          <DialogTitle>Add Member</DialogTitle>
         </DialogHeader>
 
         <div className="overflow-y-scroll max-h-[50vh]">
@@ -127,7 +127,7 @@ const AddUser = () => {
             <FieldLabel className="flex-3">Remark</FieldLabel>
           </div>
           <form
-            id="add-user-form"
+            id="add-member-form"
             onSubmit={handleSubmit(onFormSubmit)}
             className="p-1"
           >
@@ -218,7 +218,7 @@ const AddUser = () => {
           <Button
             type="submit"
             variant="default"
-            form="add-user-form"
+            form="add-member-form"
             disabled={loading}
           >
             {loading ? <Spinner /> : 'Add'}
@@ -228,4 +228,4 @@ const AddUser = () => {
     </Dialog>
   );
 };
-export default AddUser;
+export default AddMember;

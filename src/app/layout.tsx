@@ -24,10 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${notoSansTC.variable} antialiased px-2`}
+        className={`${geistSans.variable} ${notoSansTC.variable} antialiased min-h-screen flex flex-col`}
       >
         <Header />
-        <main className="bg-zinc-50 min-h-screen">
+        <main className="bg-zinc-50 flex-1">
           <div className="max-w-5xl mx-auto p-2 pt-5">{children}</div>
         </main>
         <Toaster />

@@ -1,28 +1,28 @@
-import { getEvents, getUsers } from '@/lib/supabase/actions';
+import { getEvents, getMembers } from '@/lib/supabase/actions';
 import { DetailedEventType } from '@/schema/event';
 import EventHistory from './EventHistory';
 
 const EventList = async () => {
-  const [events, users] = await Promise.all([
+  const [events, members] = await Promise.all([
     getEvents({ order: 'desc' }),
-    getUsers(),
+    getMembers(),
   ]);
 
   const detailedEvents: DetailedEventType[] = events.map((event) => {
-    const mappedDetailedUsers = event.attendees
+    const mappedDetailedMembers = event.attendees
       .map((attendee) => {
-        const user = users.find((user) => user.id === attendee);
-        if (!user) {
+        const member = members.find((member) => member.id === attendee);
+        if (!member) {
           return null;
         }
 
-        return user;
+        return member;
       })
-      .filter((user): user is NonNullable<typeof user> => user !== null);
+      .filter((member): member is NonNullable<typeof member> => member !== null);
 
     return {
       ...event,
-      attendees: mappedDetailedUsers,
+      attendees: mappedDetailedMembers,
     };
   });
 

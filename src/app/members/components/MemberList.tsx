@@ -1,8 +1,8 @@
-import User from './User';
+import Member from './Member';
 import { ClassValue } from 'clsx';
 import { cn, getPositionHierarchy } from '@/lib/utils';
-import { getUsers } from '@/lib/supabase/actions';
-import { UserType } from '@/schema/user';
+import { getMembers } from '@/lib/supabase/actions';
+import { MemberType } from '@/schema/member';
 import {
   Collapsible,
   CollapsibleContent,
@@ -11,14 +11,14 @@ import {
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-type UserListProps = {
+type MemberListProps = {
   className?: ClassValue;
 };
 
-const UserList = async ({ className }: UserListProps) => {
-  const users = await getUsers();
+const MemberList = async ({ className }: MemberListProps) => {
+  const members = await getMembers();
 
-  const [activeUsers, inActiveUsers] = users
+  const [activeMembers, inActiveMembers] = members
     .sort(
       (a, b) =>
         getPositionHierarchy(a.position) - getPositionHierarchy(b.position),
@@ -33,7 +33,7 @@ const UserList = async ({ className }: UserListProps) => {
 
         return acc;
       },
-      [[], []] as UserType[][],
+      [[], []] as MemberType[][],
     );
 
   return (
@@ -45,15 +45,15 @@ const UserList = async ({ className }: UserListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Active Users
+            Active Members
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="flex flex-col gap-y-5 mb-6 mt-3">
-            {activeUsers?.map((user) => (
-              <User
-                key={`${user.name}|${user.class}|${user.position}`}
-                user={user}
+            {activeMembers?.map((member) => (
+              <Member
+                key={`${member.name}|${member.class}|${member.position}`}
+                member={member}
               />
             ))}
           </div>
@@ -67,15 +67,15 @@ const UserList = async ({ className }: UserListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Inactive Users
+            Inactive Members
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="flex flex-col gap-y-5 mb-12 mt-3">
-            {inActiveUsers?.map((user) => (
-              <User
-                key={`${user.name}|${user.class}|${user.position}`}
-                user={user}
+            {inActiveMembers?.map((member) => (
+              <Member
+                key={`${member.name}|${member.class}|${member.position}`}
+                member={member}
               />
             ))}
           </div>
@@ -85,4 +85,4 @@ const UserList = async ({ className }: UserListProps) => {
   );
 };
 
-export default UserList;
+export default MemberList;
