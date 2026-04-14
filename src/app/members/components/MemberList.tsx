@@ -10,9 +10,24 @@ import {
 } from '@/components/ui/collapsible';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/ui/empty';
 
 type MemberListProps = {
   className?: ClassValue;
+};
+
+const EmptyState = () => {
+  return (
+    <Empty>
+      <EmptyHeader>
+        <EmptyTitle>No members found</EmptyTitle>
+      </EmptyHeader>
+    </Empty>
+  );
 };
 
 const MemberList = async ({ className }: MemberListProps) => {
@@ -45,18 +60,22 @@ const MemberList = async ({ className }: MemberListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Active Members
+            Active Members {`(${activeMembers?.length ?? 0})`}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="flex flex-col gap-y-5 mb-6 mt-3">
-            {activeMembers?.map((member) => (
-              <Member
-                key={`${member.name}|${member.class}|${member.position}`}
-                member={member}
-              />
-            ))}
-          </div>
+          {activeMembers?.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="flex flex-col gap-y-5 mb-6 mt-3">
+              {activeMembers?.map((member) => (
+                <Member
+                  key={`${member.name}|${member.class}|${member.position}`}
+                  member={member}
+                />
+              ))}
+            </div>
+          )}
         </CollapsibleContent>
       </Collapsible>
 
@@ -67,18 +86,22 @@ const MemberList = async ({ className }: MemberListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Inactive Members
+            Inactive Members {`(${inActiveMembers?.length ?? 0})`}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="flex flex-col gap-y-5 mb-12 mt-3">
-            {inActiveMembers?.map((member) => (
-              <Member
-                key={`${member.name}|${member.class}|${member.position}`}
-                member={member}
-              />
-            ))}
-          </div>
+          {inActiveMembers?.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="flex flex-col gap-y-5 mb-12 mt-3">
+              {inActiveMembers?.map((member) => (
+                <Member
+                  key={`${member.name}|${member.class}|${member.position}`}
+                  member={member}
+                />
+              ))}
+            </div>
+          )}
         </CollapsibleContent>
       </Collapsible>
     </div>
