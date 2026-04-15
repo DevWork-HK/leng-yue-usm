@@ -40,7 +40,7 @@ const MemberSearch = () => {
         <SearchIcon className="text-muted-foreground" />
       </InputGroupAddon>
       <InputGroupAddon align="inline-end">
-        <Kbd>Press Enter to Search</Kbd>
+        <Kbd>按Enter搜尋</Kbd>
       </InputGroupAddon>
     </InputGroup>
   );
