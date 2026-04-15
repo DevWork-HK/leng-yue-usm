@@ -37,29 +37,26 @@ const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
-        <div className="flex flex-nowrap gap-x-12 items-center">
-          <Image
-            src="/images/leng-yue-logo.png"
-            alt="Logo"
-            width={80}
-            height={44}
-          />
-          <div>
-            <Tabs>
-              {TabsContent.map((tab) => (
-                <Tab
-                  isActive={pathName.includes(tab.link)}
-                  link={tab.link}
-                  key={tab.name}
-                >
-                  {tab.icon}
-                  {tab.name}
-                </Tab>
-              ))}
-            </Tabs>
-          </div>
+        <Image
+          src="/images/leng-yue-logo.png"
+          alt="Logo"
+          width={80}
+          height={44}
+        />
+        <div>
+          <Tabs>
+            {TabsContent.map((tab) => (
+              <Tab
+                isActive={pathName.includes(tab.link)}
+                link={tab.link}
+                key={tab.name}
+              >
+                {tab.icon}
+                <span className="hidden sm:block">{tab.name}</span>
+              </Tab>
+            ))}
+          </Tabs>
         </div>
-        {/* <div className="flex flex-nowrap items-center">Logout</div> */}
       </div>
     </header>
   );

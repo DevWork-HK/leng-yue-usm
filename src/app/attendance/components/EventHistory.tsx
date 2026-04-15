@@ -57,7 +57,7 @@ const EventHistory = ({ event }: EventHistoryProps) => {
       {event.attendees.length > 0 && (
         <div>
           <h3 className="mb-2">參加者</h3>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             {displayAttendees.map((attendee) => (
               <Item key={attendee.id} variant="outline" className="bg-white">
                 <ItemMedia>

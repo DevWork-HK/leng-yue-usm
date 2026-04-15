@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { intersection } from 'lodash';
-import { FULL_MONTH_FORMAT, IANA_HK_TIME_ZONE } from '@/constants';
+import { EVENT, FULL_MONTH_FORMAT, IANA_HK_TIME_ZONE } from '@/constants';
 import { createLuckyDraw, getEvents, getMembers } from '@/lib/supabase/actions';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
@@ -108,6 +108,7 @@ const LuckyDrawEvent = () => {
           getEvents({
             startTime: startTime.toISO(),
             endTime: endTime.toISO(),
+            title: EVENT.CLAN_WAR,
           }),
         ]);
 
@@ -276,7 +277,7 @@ const LuckyDrawEvent = () => {
             <Users strokeWidth={3} />
             合格成員 ({eligibleMembers.length})
           </h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {eligibleMembers.map((member: MemberType) => (
               <div
                 key={member.id}
