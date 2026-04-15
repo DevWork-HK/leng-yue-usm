@@ -1,4 +1,3 @@
-import SpinnerEmpty from '@/components/custom/SpinnerEmpty';
 import AddEvent from './components/AddEvent';
 import AttendanceStat from './components/AttendanceStat';
 import EventList from './components/EventList';

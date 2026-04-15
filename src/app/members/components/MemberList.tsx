@@ -1,7 +1,6 @@
 import Member from './Member';
 import { ClassValue } from 'clsx';
 import { cn, getPositionHierarchy } from '@/lib/utils';
-import { getMembers } from '@/lib/supabase/actions';
 import { MemberType } from '@/schema/member';
 import {
   Collapsible,
@@ -14,6 +13,7 @@ import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 
 type MemberListProps = {
   className?: ClassValue;
+  members: MemberType[];
   searchParams?: { name?: string };
 };
 
@@ -27,9 +27,16 @@ const EmptyState = () => {
   );
 };
 
-const MemberList = async ({ className, searchParams }: MemberListProps) => {
+const MemberList = async ({
+  className,
+  searchParams,
+  members: passedMembers,
+}: MemberListProps) => {
   const { name } = searchParams || {};
-  const members = await getMembers({ name });
+
+  const members = name
+    ? passedMembers.filter((member) => member.name.includes(name))
+    : [...passedMembers];
 
   const [activeMembers, inActiveMembers] = members
     .sort(
