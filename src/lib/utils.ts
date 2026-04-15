@@ -161,7 +161,7 @@ export function formatDate(
 }
 
 export function getAvatarUrl(classEnum: CLASS, inverted = true) {
-  return `/images/${classEnum.toLocaleUpperCase()}${inverted ? '_inverted' : ''}${inverted ? '.jpg' : '.jpeg'}`;
+  return `/images/${classEnum.toLowerCase()}${inverted ? '_inverted' : ''}${inverted ? '.jpg' : '.jpeg'}`;
 }
 
 export function drawItemsFromArray<T>(
