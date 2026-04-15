@@ -14,6 +14,7 @@ import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 
 type MemberListProps = {
   className?: ClassValue;
+  searchParams?: { name?: string };
 };
 
 const EmptyState = () => {
@@ -26,8 +27,9 @@ const EmptyState = () => {
   );
 };
 
-const MemberList = async ({ className }: MemberListProps) => {
-  const members = await getMembers();
+const MemberList = async ({ className, searchParams }: MemberListProps) => {
+  const { name } = searchParams || {};
+  const members = await getMembers({ name });
 
   const [activeMembers, inActiveMembers] = members
     .sort(
