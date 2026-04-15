@@ -2,6 +2,7 @@ import './globals.css';
 import { Noto_Sans_TC, Geist } from 'next/font/google';
 import Header from './components/Header';
 import { Toaster } from 'sonner';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -31,6 +32,7 @@ export default function RootLayout({
           <div className="max-w-5xl mx-auto p-2 pt-5">{children}</div>
         </main>
         <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   );
