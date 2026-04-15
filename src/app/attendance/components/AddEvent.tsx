@@ -97,19 +97,12 @@ const AddEvent = () => {
     try {
       setLoading(true);
 
-      const attendCount = data.attendees.length;
-      const totalCount = activeMembers.length;
-      const attendanceRate =
-        totalCount > 0 ? Number((attendCount / totalCount).toFixed(2)) : 0;
-
       const eventData = {
         ...data,
         ...(data.title.includes(TITLE_SEPARATOR) && {
           title: data.title.split(TITLE_SEPARATOR)[1],
         }),
-        attendCount,
-        totalCount,
-        attendanceRate,
+        totalCount: activeMembers.length,
       };
 
       await createEvent(eventData);
