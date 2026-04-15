@@ -10,11 +10,7 @@ import {
 } from '@/components/ui/collapsible';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Empty,
-  EmptyHeader,
-  EmptyTitle,
-} from '@/components/ui/empty';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 
 type MemberListProps = {
   className?: ClassValue;
@@ -24,7 +20,7 @@ const EmptyState = () => {
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyTitle>No members found</EmptyTitle>
+        <EmptyTitle>暫無幫眾</EmptyTitle>
       </EmptyHeader>
     </Empty>
   );
@@ -60,7 +56,7 @@ const MemberList = async ({ className }: MemberListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Active Members {`(${activeMembers?.length ?? 0})`}
+            現職幫眾 {`(${activeMembers?.length ?? 0})`}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -86,7 +82,7 @@ const MemberList = async ({ className }: MemberListProps) => {
             className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
           >
             <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            Inactive Members {`(${inActiveMembers?.length ?? 0})`}
+            離職幫眾 {`(${inActiveMembers?.length ?? 0})`}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>

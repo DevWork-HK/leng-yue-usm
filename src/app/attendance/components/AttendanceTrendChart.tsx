@@ -14,7 +14,7 @@ import { TrendingUp } from 'lucide-react';
 
 const chartConfig = {
   attendanceRate: {
-    label: 'Attendance Rate',
+    label: '參與率',
     color: 'var(--chart-1)',
   },
 } satisfies ChartConfig;
@@ -31,8 +31,7 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <TrendingUp className="inline stroke-blue-400 mr-2" /> Event
-          Attendance Trend
+          <TrendingUp className="inline stroke-blue-400 mr-2" /> 活動參與趨勢
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -62,7 +61,7 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
                   formatter={(value) => (
                     <>
                       <div className="h-2.5 w-2.5 shrink-0 rounded-xs border-chart-1 bg-chart-1" />
-                      <div>Attendance Rate</div>
+                      <div>參與率</div>
                       <div className="font-semibold">{value}%</div>
                     </>
                   )}

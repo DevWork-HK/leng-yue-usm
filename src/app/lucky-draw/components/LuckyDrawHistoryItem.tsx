@@ -66,22 +66,21 @@ const LuckyDrawHistoryItem = ({ item }: LuckyDrawHistoryItemProps) => {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Deleting {item.event}?</AlertDialogTitle>
+          <AlertDialogTitle>刪除 {item.event}?</AlertDialogTitle>
         </AlertDialogHeader>
 
         <div>
-          Are you sure to delete this lucky draw event? This action cannot be
-          undone.
+          確定要刪除這個抽獎活動嗎？此操作無法撤銷。
         </div>
 
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
             <Button type="button" variant="outline">
-              Cancel
+              取消
             </Button>
           </AlertDialogCancel>
           <Button variant="destructive" onClick={removeLuckyDrawEvent}>
-            Delete
+            刪除
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

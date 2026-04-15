@@ -4,6 +4,7 @@ import Tabs from '@/app/components/Tabs';
 import Tab from '@/app/components/Tab';
 import { Users, CalendarCheck2, PartyPopper } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { ReactElement } from 'react';
 
 type TabContent = {
@@ -14,30 +15,35 @@ type TabContent = {
 
 const TabsContent: TabContent[] = [
   {
-    name: 'Members',
+    name: '幫眾',
     link: '/members',
-    icon: <Users size="20px" />,
+    icon: <Users size="24px" />,
   },
   {
-    name: 'Attendance',
+    name: '出席',
     link: '/attendance',
-    icon: <CalendarCheck2 size="20px" />,
+    icon: <CalendarCheck2 size="24px" />,
   },
   {
-    name: 'Lucky Draw',
+    name: '抽獎',
     link: '/lucky-draw',
-    icon: <PartyPopper size="20px" />,
+    icon: <PartyPopper size="24px" />,
   },
 ];
 
-const Header = ({}) => {
+const Header = () => {
   const pathName = usePathname();
 
   return (
     <header className="w-full border-b">
       <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
-        <div className="flex flex-nowrap gap-x-4">
-          <div className="text-2xl font-medium">USM</div>
+        <div className="flex flex-nowrap gap-x-12 items-center">
+          <Image
+            src="/images/leng-yue-logo.png"
+            alt="Logo"
+            width={80}
+            height={44}
+          />
           <div>
             <Tabs>
               {TabsContent.map((tab) => (

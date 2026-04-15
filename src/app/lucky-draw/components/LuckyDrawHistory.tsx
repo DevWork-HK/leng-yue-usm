@@ -9,7 +9,7 @@ import React from 'react';
 
 const EmptyLuckyDrawHistory = () => (
   <Empty>
-    <EmptyTitle>No Lucky Draw History Yet</EmptyTitle>
+    <EmptyTitle>暫無抽獎歷史</EmptyTitle>
   </Empty>
 );
 
@@ -51,7 +51,7 @@ const LuckyDrawHistory = async ({ className }: { className?: ClassValue }) => {
   return (
     <SectionBlock className={className}>
       <h3 className="flex items-center gap-x-4 font-semibold text-xl justify-between">
-        Lucky Draw History
+        抽獎歷史
       </h3>
       {luckyDrawEvents.length < 1 ? (
         <EmptyLuckyDrawHistory />

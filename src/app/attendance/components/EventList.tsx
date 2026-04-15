@@ -7,7 +7,7 @@ const EmptyState = () => {
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyTitle>No events found</EmptyTitle>
+        <EmptyTitle>暫無活動</EmptyTitle>
       </EmptyHeader>
     </Empty>
   );

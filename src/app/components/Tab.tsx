@@ -12,7 +12,7 @@ const Tab = ({ isActive, link, children }: PropsWithChildren<TabProps>) => {
     <Link
       href={link}
       className={cn(
-        'text-sm px-3 py-2 rounded-lg cursor-pointer transition-colors hover:bg-zinc-100 flex gap-x-2',
+        'text-lg px-3 py-2 rounded-lg cursor-pointer transition-colors hover:bg-zinc-100 flex gap-x-3 items-center font-semibold',
         isActive && 'bg-zinc-200',
       )}
     >

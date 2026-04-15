@@ -200,10 +200,10 @@ const LuckyDrawEvent = () => {
               control={control}
               render={({ field }) => (
                 <Field className="flex-1">
-                  <FieldLabel>Select Month</FieldLabel>
+                  <FieldLabel>選擇月份</FieldLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger size="lg">
-                      <SelectValue placeholder="Choose a month" />
+                      <SelectValue placeholder="選擇月份" />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       {eventOptions.map(({ value, label }) => (
@@ -226,7 +226,7 @@ const LuckyDrawEvent = () => {
                   loading || !selectedEvent || eligibleMembers.length === 0
                 }
               >
-                Run Lucky Draw
+                進行抽獎
               </Button>
             </Field>
           </div>
@@ -243,7 +243,7 @@ const LuckyDrawEvent = () => {
                   </Avatar>
                   <Field className="gap-0">
                     <FieldLabel className="text-gray-500">
-                      Selected Month
+                      已選擇月份
                     </FieldLabel>
                     <div className="font-semibold text-lg">{selectedEvent}</div>
                   </Field>
@@ -257,7 +257,7 @@ const LuckyDrawEvent = () => {
 
                   <Field className="gap-0">
                     <FieldLabel className="text-gray-500 relative">
-                      Eligible Member Count
+                      合格成員數
                     </FieldLabel>
                     <div className="font-semibold text-lg">
                       {eligibleMembers?.length || 0}
@@ -274,7 +274,7 @@ const LuckyDrawEvent = () => {
         <SectionBlock className="mt-7">
           <h3 className="flex items-center gap-x-4 font-semibold text-xl">
             <Users strokeWidth={3} />
-            Eligible Members ({eligibleMembers.length})
+            合格成員 ({eligibleMembers.length})
           </h3>
           <div className="grid grid-cols-3 gap-4">
             {eligibleMembers.map((member: MemberType) => (
@@ -294,7 +294,7 @@ const LuckyDrawEvent = () => {
         <SectionBlock className="mt-7 border-2 border-violet-200 bg-violet-100">
           <h3 className="flex items-center gap-x-4 font-semibold text-xl">
             <Trophy className="stroke-3 stroke-violet-600" />
-            Lucky Draw Result
+            抽獎結果
           </h3>
           {luckDrawResult.map((result) => {
             return result.winners.map((winnerId) => {

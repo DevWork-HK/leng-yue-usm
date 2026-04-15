@@ -239,10 +239,9 @@ const Member = ({ member }: MemberProps) => {
 
           <DialogContent showCloseButton={false}>
             <DialogHeader>
-              <DialogTitle>Edit Member</DialogTitle>
+              <DialogTitle>更新幫眾資料</DialogTitle>
               <DialogDescription>
-                Update Member Information. Click &quot;Submit&quot; to save
-                changes.
+                更新幫眾資料。點擊「確定」以保存更改。
               </DialogDescription>
             </DialogHeader>
 
@@ -256,7 +255,7 @@ const Member = ({ member }: MemberProps) => {
                   control={control}
                   render={({ field, fieldState: { invalid, error } }) => (
                     <Field>
-                      <FieldLabel htmlFor="edit-form-name">Name</FieldLabel>
+                      <FieldLabel htmlFor="edit-form-name">角色ID</FieldLabel>
                       <Input {...field} id="edit-form-name" />
                       {invalid && <FieldError errors={[error]} />}
                     </Field>
@@ -268,10 +267,10 @@ const Member = ({ member }: MemberProps) => {
                   control={control}
                   render={({ field, fieldState: { invalid, error } }) => (
                     <Field>
-                      <FieldLabel htmlFor="edit-form-class">Class</FieldLabel>
+                      <FieldLabel htmlFor="edit-form-class">職業</FieldLabel>
                       <Select {...field} onValueChange={field.onChange}>
                         <SelectTrigger id="edit-form-class">
-                          <SelectValue placeholder="Select a class" />
+                          <SelectValue placeholder="選擇職業" />
                         </SelectTrigger>
                         <SelectContent position="popper">
                           {Object.entries(CLASS).map(([key, value]) => (
@@ -291,12 +290,10 @@ const Member = ({ member }: MemberProps) => {
                   control={control}
                   render={({ field, fieldState: { invalid, error } }) => (
                     <Field>
-                      <FieldLabel htmlFor="edit-form-position">
-                        Position
-                      </FieldLabel>
+                      <FieldLabel htmlFor="edit-form-position">職位</FieldLabel>
                       <Select {...field} onValueChange={field.onChange}>
                         <SelectTrigger id="edit-form-position">
-                          <SelectValue placeholder="Select a position" />
+                          <SelectValue placeholder="選擇職位" />
                         </SelectTrigger>
                         <SelectContent position="popper">
                           {Object.entries(POSITION).map(([key, value]) => (
@@ -316,7 +313,7 @@ const Member = ({ member }: MemberProps) => {
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline">
-                  Cancel
+                  取消
                 </Button>
               </DialogClose>
               <Button
@@ -325,23 +322,23 @@ const Member = ({ member }: MemberProps) => {
                 form={`member-edit-form-${member.id}`}
                 disabled={loading}
               >
-                {loading ? <Spinner /> : 'Submit'}
+                {loading ? <Spinner /> : '確定'}
               </Button>
             </DialogFooter>
           </DialogContent>
 
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>您確定要執行此操作嗎？</AlertDialogTitle>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>取消</AlertDialogCancel>
               <AlertDialogAction
                 onClick={
                   member.active === true ? onDeleteConfirm : onAddMemberConfirm
                 }
               >
-                Continue
+                確定
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

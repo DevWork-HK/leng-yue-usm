@@ -108,7 +108,7 @@ const AddMember = () => {
     >
       <DialogTrigger asChild>
         <Button size="xl">
-          <UserPlus /> Add Member
+          <UserPlus /> 增加幫眾
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -116,15 +116,15 @@ const AddMember = () => {
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle>Add Member</DialogTitle>
+          <DialogTitle>增加幫眾</DialogTitle>
         </DialogHeader>
 
         <div className="overflow-y-scroll max-h-[50vh]">
           <div className="flex flex-nowrap gap-2 p-1">
-            <FieldLabel className="flex-2">Name</FieldLabel>
-            <FieldLabel className="flex-1">Class</FieldLabel>
-            <FieldLabel className="flex-1">Position</FieldLabel>
-            <FieldLabel className="flex-3">Remark</FieldLabel>
+            <FieldLabel className="flex-2">角色ID</FieldLabel>
+            <FieldLabel className="flex-1">職業</FieldLabel>
+            <FieldLabel className="flex-1">職位</FieldLabel>
+            <FieldLabel className="flex-3">備註</FieldLabel>
           </div>
           <form
             id="add-member-form"
@@ -212,7 +212,7 @@ const AddMember = () => {
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">
-              Cancel
+              取消
             </Button>
           </DialogClose>
           <Button
@@ -221,7 +221,7 @@ const AddMember = () => {
             form="add-member-form"
             disabled={loading}
           >
-            {loading ? <Spinner /> : 'Add'}
+            {loading ? <Spinner /> : '確定'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -46,17 +46,17 @@ const EventHistory = ({ event }: EventHistoryProps) => {
         </ItemContent>
         <ItemContent className="items-end gap-2">
           <Badge className="bg-blue-100 border-blue-200 text-blue-400 flex-1 w-full flex text-center">
-            {event.totalCount} Total
+            {event.totalCount} 總人數
           </Badge>
           <Badge className="bg-green-100 text-green-700 flex-1 w-full border-green-200">
-            {event.attendCount} Joined
+            {event.attendCount} 已參加
           </Badge>
         </ItemContent>
       </Item>
 
       {event.attendees.length > 0 && (
         <div>
-          <h3 className="mb-2">Attendees</h3>
+          <h3 className="mb-2">參加者</h3>
           <div className="grid grid-cols-4 gap-2">
             {displayAttendees.map((attendee) => (
               <Item key={attendee.id} variant="outline" className="bg-white">

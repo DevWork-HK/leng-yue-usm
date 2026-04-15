@@ -30,12 +30,12 @@ const AttendanceStat = async () => {
   return (
     <div className="w-full">
       <p className="text-gray-500 mb-2">
-        Statistic about event attendance in the past 3 months.
+        過去三個月的活動統計
       </p>
       <div className="flex flex-nowrap gap-x-6 w-full mb-6">
         <Card className="flex-1">
           <CardHeader>
-            <CardDescription>Total Events</CardDescription>
+            <CardDescription>總活動數</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center font-extrabold">
             {events.length}
@@ -44,7 +44,7 @@ const AttendanceStat = async () => {
 
         <Card className="flex-1">
           <CardHeader>
-            <CardDescription>Average Attendance Rate</CardDescription>
+            <CardDescription>平均參與率</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center text-blue-400 font-extrabold">
             {events.length > 0

@@ -6,7 +6,7 @@ const MembersPage = () => {
     <div className="mt-5">
       <div>
         <div className="flex flex-nowrap justify-between items-center">
-          <h2 className="font-bold text-2xl">Members</h2>
+          <h2 className="font-bold text-2xl">幫眾</h2>
           <AddMember />
         </div>
       </div>

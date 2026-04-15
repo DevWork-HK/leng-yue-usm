@@ -149,7 +149,7 @@ const AddEvent = () => {
     >
       <DialogTrigger asChild>
         <Button size="xl">
-          <CalendarPlus /> Add Event
+          <CalendarPlus /> 建立活動
         </Button>
       </DialogTrigger>
 
@@ -158,8 +158,8 @@ const AddEvent = () => {
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle>Add Event</DialogTitle>
-          <DialogDescription>Record an event.</DialogDescription>
+          <DialogTitle>建立活動</DialogTitle>
+          <DialogDescription>記錄一個活動。</DialogDescription>
         </DialogHeader>
 
         <div>
@@ -172,7 +172,7 @@ const AddEvent = () => {
                   <div>
                     <div className="flex flex-nowrap gap-2">
                       <Field className="flex-1">
-                        <FieldLabel>Event</FieldLabel>
+                        <FieldLabel>活動</FieldLabel>
                         <Select
                           value={field.value?.split(TITLE_SEPARATOR)[0] || ''}
                           onValueChange={field.onChange}
@@ -192,7 +192,7 @@ const AddEvent = () => {
                       {field.value?.split(TITLE_SEPARATOR)[0] ===
                         EVENT.OTHER && (
                         <Field className="flex-1">
-                          <FieldLabel>Please Specify</FieldLabel>
+                          <FieldLabel>請說明</FieldLabel>
                           <Input
                             value={field.value?.split(TITLE_SEPARATOR)[1] || ''}
                             onChange={(e) =>
@@ -200,7 +200,7 @@ const AddEvent = () => {
                                 `${field.value?.split(TITLE_SEPARATOR)[0] || ''}${TITLE_SEPARATOR}${e.target.value}`,
                               )
                             }
-                            placeholder="Remark"
+                            placeholder="備註"
                           />
                         </Field>
                       )}
@@ -219,8 +219,8 @@ const AddEvent = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Field>
-                    <FieldLabel>Description</FieldLabel>
-                    <Input {...field} placeholder="Description" />
+                    <FieldLabel>描述</FieldLabel>
+                    <Input {...field} placeholder="描述" />
                     {error && (
                       <FieldError className="text-sm text-red-500">
                         {error.message}
@@ -236,7 +236,7 @@ const AddEvent = () => {
                 render={({ field, fieldState: { error } }) => (
                   <Field>
                     <FieldLabel htmlFor="add-event-date-picker">
-                      Date
+                      日期
                     </FieldLabel>
                     <Popover
                       open={datePickerOpen}
@@ -251,7 +251,7 @@ const AddEvent = () => {
                           {field.value ? (
                             formatDate(field.value)
                           ) : (
-                            <span className="text-zinc-500">Pick a date</span>
+                            <span className="text-zinc-500">選擇日期</span>
                           )}
                           <CalendarDays />
                         </Button>
@@ -288,7 +288,7 @@ const AddEvent = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Field className="flex-1">
-                    <FieldLabel>Members</FieldLabel>
+                    <FieldLabel>成員</FieldLabel>
                     <MultiSelect
                       values={field.value}
                       onValuesChange={field.onChange}
@@ -298,8 +298,8 @@ const AddEvent = () => {
                       </MultiSelectTrigger>
                       <MultiSelectContent
                         search={{
-                          emptyMessage: 'No members found.',
-                          placeholder: 'Type to search',
+                          emptyMessage: '未找到成員',
+                          placeholder: '輸入以搜尋',
                         }}
                       >
                         {memberLoading ? (
@@ -329,7 +329,7 @@ const AddEvent = () => {
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">
-              Cancel
+              取消
             </Button>
           </DialogClose>
           <Button
@@ -338,7 +338,7 @@ const AddEvent = () => {
             form="add-event-form"
             disabled={loading}
           >
-            {loading ? <Spinner /> : 'Add'}
+            {loading ? <Spinner /> : '建立活動'}
           </Button>
         </DialogFooter>
       </DialogContent>
