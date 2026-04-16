@@ -6,6 +6,7 @@ import { Users, CalendarCheck2, PartyPopper } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { ReactElement } from 'react';
+import Link from 'next/link';
 
 type TabContent = {
   name: string;
@@ -37,12 +38,14 @@ const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
-        <Image
-          src="/images/leng-yue-logo.png"
-          alt="Logo"
-          width={80}
-          height={44}
-        />
+        <Link href="/">
+          <Image
+            src="/images/leng-yue-logo.png"
+            alt="Logo"
+            width={80}
+            height={44}
+          />
+        </Link>
         <div>
           <Tabs>
             {TabsContent.map((tab) => (
