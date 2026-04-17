@@ -15,5 +15,6 @@
         "ilike",
         "nonoptional",
         "supabase"
-    ]
+    ],
+    "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

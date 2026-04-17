@@ -107,7 +107,7 @@ const AddMember = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="xl">
+        <Button size="xl" className='border-(--xue-he-light) bg-linear-to-br from-(--xue-he-primary) to-white'>
           <UserPlus /> 增加幫眾
         </Button>
       </DialogTrigger>

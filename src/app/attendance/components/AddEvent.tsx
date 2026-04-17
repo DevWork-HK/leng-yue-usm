@@ -141,7 +141,7 @@ const AddEvent = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="xl">
+        <Button size="xl" className='border-chart-1 bg-linear-to-br from-chart-2 to-white'>
           <CalendarPlus /> 建立活動
         </Button>
       </DialogTrigger>

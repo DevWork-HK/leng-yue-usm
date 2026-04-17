@@ -37,6 +37,22 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Class color */
+  --cang-lan-primary: oklch(80.064% 0.09512 268.366);
+  --chao-guang-primary: oklch(78.577% 0.10527 255.861);
+  --jiu-ling-primary: oklch(59.407% 0.22672 294.569);
+  --jiu-ling-light: oklch(79.407% 0.22672 294.569);
+  --long-yin-primary: oklch(89.849% 0.10842 159.392);
+  --shen-xiang-primary: oklch(57.91% 0.19612 268.9);
+  --shen-xiang-light: oklch(77.91% 0.19612 268.9);
+  --su-wen-primary: oklch(77.942% 0.07616 18.871);
+  --sui-meng-primary: oklch(88.514% 0.0495 194.824);
+  --tie-yi-primary: oklch(80.071% 0.09132 70.212);
+  --tie-yi-light: oklch(90.071% 0.09132 70.212);
+  --xuan-ji-primary: oklch(91.686% 0.08331 95.781);
+  --xue-he-primary: oklch(61.396% 0.14298 22.165);
+  --xue-he-light: oklch(75.396% 0.14298 22.165);
 }
 
 @theme inline {

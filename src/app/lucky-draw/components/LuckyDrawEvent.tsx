@@ -222,6 +222,7 @@ const LuckyDrawEvent = () => {
               <Button
                 type="submit"
                 size="lg"
+                className='border-(--tie-yi-light) bg-linear-to-br from-(--tie-yi-primary) via-(--tie-yi-light) to-white'
                 form="lucky-draw-form"
                 disabled={
                   loading || !selectedEvent || eligibleMembers.length === 0

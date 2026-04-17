@@ -15,16 +15,16 @@ const ClassAvatar = ({ member, size = 'lg' }: ClassAvatarProps) => {
         src={getAvatarUrl(member.class)}
         className={cn(
           'p-0.5 object-cover border-2 border-gray-400',
-          member.class === CLASS.CANG_LAN && 'border-[#a4bcfc]',
-          member.class === CLASS.CHAO_GUANG && 'border-[#8cbcfc]',
-          member.class === CLASS.JIU_LING && 'border-[#8c54f4]',
-          member.class === CLASS.LONG_YIN && 'border-2 border-[#9cf4c4]',
-          member.class === CLASS.SHEN_XIANG && 'border-2 border-[#4c6cec]',
-          member.class === CLASS.SU_WEN && 'border-2 border-[#e4a4a4]',
-          member.class === CLASS.SUI_MENG && 'border-2 border-[#b4e4e3]',
-          member.class === CLASS.TIE_YI && 'border-2 border-[#e4b47c]',
-          member.class === CLASS.XUAN_JI && 'border-2 border-[#f4e4a4]',
-          member.class === CLASS.XUE_HE && 'border-2 border-[#cc5c5c]',
+          member.class === CLASS.CANG_LAN && 'border-(--cang-lan-primary)',
+          member.class === CLASS.CHAO_GUANG && 'border-(--chao-guang-primary)',
+          member.class === CLASS.JIU_LING && 'border-(--jiu-ling-primary)',
+          member.class === CLASS.LONG_YIN && 'border-(--long-yin-primary)',
+          member.class === CLASS.SHEN_XIANG && 'border-(--shen-xiang-primary)',
+          member.class === CLASS.SU_WEN && 'border-(--su-wen-primary)',
+          member.class === CLASS.SUI_MENG && 'border-(--sui-meng-primary)',
+          member.class === CLASS.TIE_YI && 'border-(--tie-yi-primary)',
+          member.class === CLASS.XUAN_JI && 'border-(--xuan-ji-primary)',
+          member.class === CLASS.XUE_HE && 'border-(--xue-he-primary)',
         )}
       />
       <AvatarFallback>{member.name.substring(0, 2)}</AvatarFallback>
