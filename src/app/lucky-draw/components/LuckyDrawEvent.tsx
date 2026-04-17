@@ -150,7 +150,7 @@ const LuckyDrawEvent = () => {
 
       const result = [
         {
-          name: 'full-attendance bonus',
+          name: '全勤獎',
           priority: 5,
           winners: drawn.map((winner) => winner.id),
         },
@@ -160,7 +160,7 @@ const LuckyDrawEvent = () => {
 
       if (grandPrizeWinners.length > 0) {
         result.unshift({
-          name: 'grand prize',
+          name: '680自選',
           priority: 1,
           winners: grandPrizeWinners.map((winner) => winner.id),
         });
