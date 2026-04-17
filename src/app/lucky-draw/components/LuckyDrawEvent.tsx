@@ -222,7 +222,7 @@ const LuckyDrawEvent = () => {
               <Button
                 type="submit"
                 size="lg"
-                className='border-(--tie-yi-light) bg-linear-to-br from-(--tie-yi-primary) via-(--tie-yi-light) to-white'
+                className="border-(--tie-yi-light) bg-linear-to-br from-(--tie-yi-primary) via-(--tie-yi-light) to-white"
                 form="lucky-draw-form"
                 disabled={
                   loading || !selectedEvent || eligibleMembers.length === 0
@@ -282,14 +282,14 @@ const LuckyDrawEvent = () => {
             {eligibleMembers.map((member: MemberType) => (
               <div
                 key={member.id}
-                className="flex gap-x-4 items-center border rounded-lg p-3"
+                className="flex gap-x-4 items-center border rounded-lg p-3 relative"
               >
                 <ClassAvatar member={member} />
                 {member.name}
                 <Button
                   variant="outline"
-                  size="icon"
-                  className="border-none p-0 ml-auto"
+                  size="icon-xs"
+                  className="border-none p-0 ml-auto absolute top-0 right-0 translate-x-1/2 translate-y-[-50%] bg-zinc-100 rounded-full"
                   onClick={() => {
                     const updatedMembers = eligibleMembers.filter(
                       (m) => m.id !== member.id,
