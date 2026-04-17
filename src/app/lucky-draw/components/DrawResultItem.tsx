@@ -32,10 +32,10 @@ const DrawResultItem = ({
       </div>
       <div
         className={cn(
-          'ml-auto rounded-lg p-2 font-medium',
+          'ml-auto rounded-lg p-2 font-medium border',
           result.priority === 1
             ? 'border-yellow-500 text-yellow-700'
-            : 'border border-gray-400 text-gray-700',
+            : 'border-gray-400 text-gray-700',
         )}
       >
         {result.name}

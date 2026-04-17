@@ -159,7 +159,7 @@ const LuckyDrawEvent = () => {
       const { drawn: grandPrizeWinners } = drawItemsFromArray(remaining, 1);
 
       if (grandPrizeWinners.length > 0) {
-        result.push({
+        result.unshift({
           name: 'grand prize',
           priority: 1,
           winners: grandPrizeWinners.map((winner) => winner.id),
@@ -285,6 +285,19 @@ const LuckyDrawEvent = () => {
               >
                 <ClassAvatar member={member} />
                 {member.name}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-none p-0 ml-auto"
+                  onClick={() => {
+                    const updatedMembers = eligibleMembers.filter(
+                      (m) => m.id !== member.id,
+                    );
+                    setValue('eligibleMembers', updatedMembers);
+                  }}
+                >
+                  &times;
+                </Button>
               </div>
             ))}
           </div>
