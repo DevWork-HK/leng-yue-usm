@@ -6,7 +6,7 @@ const LuckyDraw = () => {
   return (
     <div className="mt-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-x-4">
-        <PartyPopper className="stroke-violet-600" /> 抽獎活動
+        <PartyPopper className="stroke-(--tie-yi-primary)" /> 抽獎活動
       </h2>
       <LuckyDrawEvent />
       <LuckyDrawHistory className="mt-7" />
