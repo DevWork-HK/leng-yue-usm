@@ -50,8 +50,21 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={2}
-              interval={0}
-              tickFormatter={(value) => formatDate(value, 'LLL d')}
+              interval="preserveStartEnd"
+              tickFormatter={(value, index) => {
+                const existValue = data.findIndex(
+                  (data, dataIndex) =>
+                    data.date === value && dataIndex !== index,
+                );
+
+                if (existValue !== -1) {
+                  return existValue > index
+                    ? formatDate(value, 'LLL d')
+                    : formatDate(value, 'LLL d') + ` (${index - existValue})`;
+                } else {
+                  return formatDate(value, 'LLL d');
+                }
+              }}
             />
             <ChartTooltip
               cursor={false}

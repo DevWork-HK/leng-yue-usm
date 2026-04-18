@@ -29,9 +29,7 @@ const AttendanceStat = async () => {
 
   return (
     <div className="w-full">
-      <p className="text-gray-500 mb-2">
-        過去三個月的活動統計
-      </p>
+      <p className="text-gray-500 mb-2">過去三個月的活動統計</p>
       <div className="flex flex-nowrap gap-x-6 w-full mb-6">
         <Card className="flex-1">
           <CardHeader>
