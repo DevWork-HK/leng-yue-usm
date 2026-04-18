@@ -22,6 +22,7 @@ const chartConfig = {
 type AttendanceTrendChartProps = {
   data: {
     date: string;
+    name: string;
     attendanceRate: number;
   }[];
 };
@@ -46,25 +47,11 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="name"
               tickLine={false}
               axisLine={false}
               tickMargin={2}
               interval="preserveStartEnd"
-              tickFormatter={(value, index) => {
-                const existValue = data.findIndex(
-                  (data, dataIndex) =>
-                    data.date === value && dataIndex !== index,
-                );
-
-                if (existValue !== -1) {
-                  return existValue > index
-                    ? formatDate(value, 'LLL d')
-                    : formatDate(value, 'LLL d') + ` (${index - existValue})`;
-                } else {
-                  return formatDate(value, 'LLL d');
-                }
-              }}
             />
             <ChartTooltip
               cursor={false}

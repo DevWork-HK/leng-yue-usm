@@ -8,6 +8,7 @@ import { AttendanceTrendChart } from './AttendanceTrendChart';
 import { DateTime } from 'luxon';
 import { IANA_HK_TIME_ZONE } from '@/constants/constants';
 import { getEvents } from '@/lib/supabase/actions';
+import { formatDate } from '@/lib/utils';
 
 const AttendanceStat = async () => {
   const eventsStartTime = DateTime.local({ zone: IANA_HK_TIME_ZONE })
@@ -17,10 +18,27 @@ const AttendanceStat = async () => {
   const events = await getEvents({ startTime: eventsStartTime });
 
   const graphData = events
-    .map((event) => ({
-      date: event.date,
-      attendanceRate: event.attendanceRate * 100,
-    }))
+    .map((event, index) => {
+      const existValue = events.findIndex(
+        (data, dataIndex) => data.date === event.date && dataIndex !== index,
+      );
+
+      let dataName = '';
+      if (existValue !== -1) {
+        dataName =
+          existValue > index
+            ? formatDate(event.date, 'LLL d')
+            : formatDate(event.date, 'LLL d') + ` (${index - existValue})`;
+      } else {
+        dataName = formatDate(event.date, 'LLL d');
+      }
+
+      return {
+        date: event.date,
+        name: dataName,
+        attendanceRate: Number((event.attendanceRate * 100).toFixed(2)),
+      };
+    })
     .sort((a, b) =>
       DateTime.fromISO(a.date)
         .diff(DateTime.fromISO(b.date))
