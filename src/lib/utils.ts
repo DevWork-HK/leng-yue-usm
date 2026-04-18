@@ -52,7 +52,7 @@ export function getEventName(eventEnum: EVENT) {
   const eventName = eventNameMap.get(eventEnum);
 
   if (!eventName) {
-    return '';
+    return eventEnum;
   }
 
   return eventName;

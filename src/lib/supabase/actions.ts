@@ -147,6 +147,21 @@ export const getEvents = async (options?: GetEventsOptions) => {
   return data;
 };
 
+export const deleteEvent = async (ids: string[]) => {
+  const supabase = createClient(cookies());
+
+  const { error, data } = await supabase
+    .from(TABLE_NAMES.EVENT)
+    .delete()
+    .in('id', ids);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
 export const createLuckyDraw = async (event: Partial<LuckyDrawType>) => {
   const supabase = createClient(cookies());
 
