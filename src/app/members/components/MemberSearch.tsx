@@ -33,7 +33,7 @@ const MemberSearch = () => {
     <InputGroup className="bg-white">
       <InputGroupInput
         id="inline-start-input"
-        placeholder="Search..."
+        placeholder="搜尋..."
         onKeyDownCapture={handleKeyDownSearch}
       />
       <InputGroupAddon align="inline-start">

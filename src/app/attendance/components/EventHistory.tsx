@@ -4,16 +4,22 @@ import ClassAvatar from '@/components/custom/ClassAvatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group';
+import {
   Item,
   ItemContent,
   ItemDescription,
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item';
+import { Kbd } from '@/components/ui/kbd';
 import { EVENT } from '@/constants';
 import { formatDate, getEventName } from '@/lib/utils';
 import { DetailedEventType } from '@/schema/event';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
 type EventHistoryProps = {
@@ -23,15 +29,38 @@ type EventHistoryProps = {
 const DEFAULT_SHOW_NUMBER = 12;
 
 const EventHistory = ({ event }: EventHistoryProps) => {
+  const [showMore, setShowMore] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [displayAttendees, setDisplayAttendees] = useState(
     event.attendees.slice(0, DEFAULT_SHOW_NUMBER),
   );
 
-  const toggleAttendees = () => {
-    if (displayAttendees.length === DEFAULT_SHOW_NUMBER) {
-      setDisplayAttendees(event.attendees);
+  const updateDiplayAttendees = (
+    searchText: string = '',
+    showMoreMembers: boolean = false,
+  ) => {
+    setShowMore(showMoreMembers);
+    setSearchText(searchText);
+
+    if (searchText) {
+      setDisplayAttendees(
+        event.attendees.filter((member) => member.name.includes(searchText)),
+      );
     } else {
-      setDisplayAttendees(event.attendees.slice(0, DEFAULT_SHOW_NUMBER));
+      if (showMoreMembers) {
+        setDisplayAttendees(event.attendees);
+      } else {
+        setDisplayAttendees(event.attendees.slice(0, DEFAULT_SHOW_NUMBER));
+      }
+    }
+  };
+
+  const handleKeyDownSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const target = e.target as HTMLInputElement;
+      const name = target.value;
+
+      updateDiplayAttendees(name);
     }
   };
 
@@ -55,8 +84,21 @@ const EventHistory = ({ event }: EventHistoryProps) => {
       </Item>
 
       {event.attendees.length > 0 && (
-        <div>
-          <h3 className="mb-2">參加者</h3>
+        <div className="flex flex-col gap-y-4">
+          <h3>參加者</h3>
+          <InputGroup className="bg-white">
+            <InputGroupInput
+              id={`inline-start-input-${event.id}`}
+              placeholder="搜尋..."
+              onKeyDownCapture={handleKeyDownSearch}
+            />
+            <InputGroupAddon align="inline-start">
+              <SearchIcon className="text-muted-foreground" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <Kbd>按Enter搜尋</Kbd>
+            </InputGroupAddon>
+          </InputGroup>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
             {displayAttendees.map((attendee) => (
               <Item key={attendee.id} variant="outline" className="bg-white">
@@ -70,19 +112,15 @@ const EventHistory = ({ event }: EventHistoryProps) => {
             ))}
           </div>
 
-          {event.attendees.length > DEFAULT_SHOW_NUMBER && (
+          {event.attendees.length > DEFAULT_SHOW_NUMBER && !searchText && (
             <Button
               variant="ghost"
               className="w-full"
-              onClick={toggleAttendees}
+              onClick={() => {
+                updateDiplayAttendees('', !showMore);
+              }}
             >
-              <ChevronDown
-                className={
-                  displayAttendees.length === DEFAULT_SHOW_NUMBER
-                    ? 'rotate-0'
-                    : 'rotate-180'
-                }
-              />
+              <ChevronDown className={!showMore ? 'rotate-0' : 'rotate-180'} />
             </Button>
           )}
         </div>
