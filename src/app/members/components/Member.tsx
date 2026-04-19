@@ -193,7 +193,10 @@ const Member = ({ member }: MemberProps) => {
         <AlertDialog>
           <Item>
             <ItemMedia>
-              <ClassAvatar member={member} />
+              <ClassAvatar
+                memberClass={member.class}
+                fallbackText={member.name}
+              />
             </ItemMedia>
             <ItemContent>
               <ItemTitle>{member.name}</ItemTitle>

@@ -22,6 +22,8 @@ export const classNameMap = new Map<CLASS, string>([
   [CLASS.SUI_MENG, '碎夢'],
   [CLASS.XUAN_JI, '玄機'],
   [CLASS.XUE_HE, '血河'],
+  [CLASS.CANG_LAN, '滄瀾'],
+  [CLASS.CHAO_GUANG, '潮光'],
 ]);
 
 export enum POSITION {

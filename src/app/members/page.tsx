@@ -9,11 +9,12 @@ import { getClassName } from '@/lib/utils';
 type MembersPageProps = {
   searchParams?: Promise<{
     name?: string;
+    cs?: string[] | string;
   }>;
 };
 
 const MembersPage = async ({ searchParams }: MembersPageProps) => {
-  const { name } = (await searchParams) || {};
+  const { name, cs } = (await searchParams) || {};
 
   const members = await getMembers();
 
@@ -51,7 +52,10 @@ const MembersPage = async ({ searchParams }: MembersPageProps) => {
       </div>
       <ClassDistributionGraph distributionData={distributionData} />
       <MemberSearch />
-      <MemberList searchParams={{ name }} members={members} />
+      <MemberList
+        searchParams={{ name, cs: typeof cs === 'string' ? [cs] : cs }}
+        members={members}
+      />
     </div>
   );
 };

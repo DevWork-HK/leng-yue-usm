@@ -137,7 +137,11 @@ const EventHistory = ({ event }: EventHistoryProps) => {
               {displayAttendees.map((attendee) => (
                 <Item key={attendee.id} variant="outline" className="bg-white">
                   <ItemMedia>
-                    <ClassAvatar member={attendee} size="sm" />
+                    <ClassAvatar
+                      memberClass={attendee.class}
+                      fallbackText={attendee.name}
+                      size="sm"
+                    />
                   </ItemMedia>
                   <ItemContent>
                     <ItemTitle>{attendee.name}</ItemTitle>

@@ -10,11 +10,12 @@ import {
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
+import MemberFilter from './MemberFilter';
 
 type MemberListProps = {
   className?: ClassValue;
   members: MemberType[];
-  searchParams?: { name?: string };
+  searchParams?: { name?: string; cs?: string[] };
 };
 
 const EmptyState = () => {
@@ -32,11 +33,15 @@ const MemberList = async ({
   searchParams,
   members: passedMembers,
 }: MemberListProps) => {
-  const { name } = searchParams || {};
+  const { name, cs } = searchParams || {};
 
-  const members = name
+  let members = name
     ? passedMembers.filter((member) => member.name.includes(name))
     : [...passedMembers];
+
+  members = cs
+    ? members.filter((member) => cs.includes(member.class))
+    : members;
 
   const [activeMembers, inActiveMembers] = members
     .sort(
@@ -59,15 +64,18 @@ const MemberList = async ({
   return (
     <div className={cn('flex flex-col gap-y-5 mb-12', className)}>
       <Collapsible defaultOpen={true}>
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="group w-full justify-start bg-none data-[state=open]:bg-transparent"
-          >
-            <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
-            現職幫眾 {`(${activeMembers?.length ?? 0})`}
-          </Button>
-        </CollapsibleTrigger>
+        <div className="flex justify-between">
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="group justify-start bg-none data-[state=open]:bg-transparent"
+            >
+              <ChevronRight className="transition-transform group-data-[state=open]:rotate-90" />{' '}
+              現職幫眾 {`(${activeMembers?.length ?? 0})`}
+            </Button>
+          </CollapsibleTrigger>
+          <MemberFilter />
+        </div>
         <CollapsibleContent>
           {activeMembers?.length === 0 ? (
             <EmptyState />

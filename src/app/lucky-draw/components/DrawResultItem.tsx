@@ -27,7 +27,7 @@ const DrawResultItem = ({
         )}
       />
       <div className="flex items-center gap-4">
-        <ClassAvatar member={member} />
+        <ClassAvatar memberClass={member.class} fallbackText={member.name} />
         <div>{member.name}</div>
       </div>
       <div

@@ -11,6 +11,7 @@ import { LuckyDrawType } from '@/schema/luckyDraw';
 type GetMemberOptions = {
   activeOnly?: boolean;
   name?: string;
+  classes?: string[];
 };
 
 export const createMembers = async (members: Partial<MemberType>[]) => {
@@ -31,16 +32,20 @@ export const createMembers = async (members: Partial<MemberType>[]) => {
 export const getMembers = async (options: GetMemberOptions = {}) => {
   const supabase = createClient(cookies());
 
-  const { activeOnly, name } = options;
+  const { activeOnly, name, classes } = options;
 
-  let query = supabase.from(TABLE_NAMES.MEMBER).select<'*', MemberType>('*');
+  const query = supabase.from(TABLE_NAMES.MEMBER).select<'*', MemberType>('*');
 
   if (activeOnly) {
-    query = query.eq('active', true);
+    query.eq('active', true);
   }
 
   if (name) {
-    query = query.ilike('name', `%${name}%`);
+    query.ilike('name', `%${name}%`);
+  }
+
+  if (classes) {
+    query.in('class', classes);
   }
 
   const { error, data } = await query;

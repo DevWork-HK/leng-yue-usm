@@ -284,7 +284,10 @@ const LuckyDrawEvent = () => {
                 key={member.id}
                 className="flex gap-x-4 items-center border rounded-lg p-3 relative"
               >
-                <ClassAvatar member={member} />
+                <ClassAvatar
+                  memberClass={member.class}
+                  fallbackText={member.name}
+                />
                 {member.name}
                 <Button
                   variant="outline"
