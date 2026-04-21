@@ -262,3 +262,18 @@ export const signUp = async (
 
   return data;
 };
+
+export const signIn = async (email: string, password: string) => {
+  const supabase = createClient(cookies());
+
+  const { error, data } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

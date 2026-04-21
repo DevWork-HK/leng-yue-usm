@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ReactElement } from 'react';
 import Link from 'next/link';
 import SignUp from './SignUp';
+import SignIn from './SignIn';
 
 type TabContent = {
   name: string;
@@ -62,6 +63,7 @@ const Header = () => {
           </Tabs>
         </div>
         <SignUp />
+        <SignIn />
       </div>
     </header>
   );
