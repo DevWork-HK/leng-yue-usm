@@ -35,7 +35,7 @@ import {
   string,
   union,
   enum as enum_,
-  infer as infer_,
+  infer as _infer,
 } from 'zod';
 
 const createMemberSchema = object({
@@ -55,7 +55,7 @@ const createMemberSchema = object({
   ),
 });
 
-type CreateMemberType = infer_<typeof createMemberSchema>;
+type CreateMemberType = _infer<typeof createMemberSchema>;
 
 const defaultMember = { name: '', class: '', position: '', remark: '' };
 

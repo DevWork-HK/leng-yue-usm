@@ -238,3 +238,27 @@ export const deleteLuckyDraw = async (ids: string[]) => {
 
   return data;
 };
+
+export const signUp = async (
+  displayName: string,
+  email: string,
+  password: string,
+) => {
+  const supabase = createClient(cookies());
+
+  const { error, data } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: displayName,
+      },
+    },
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};

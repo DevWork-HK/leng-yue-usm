@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { ReactElement } from 'react';
 import Link from 'next/link';
+import SignUp from './SignUp';
 
 type TabContent = {
   name: string;
@@ -37,7 +38,7 @@ const Header = () => {
 
   return (
     <header className="w-full border-b">
-      <div className="max-w-5xl m-auto flex justify-between py-3 px-2">
+      <div className="max-w-5xl m-auto flex py-3 px-2 items-center gap-x-6">
         <Link href="/">
           <Image
             src="/images/leng-yue-logo.png"
@@ -46,7 +47,7 @@ const Header = () => {
             height={44}
           />
         </Link>
-        <div>
+        <div className="ml-auto">
           <Tabs>
             {TabsContent.map((tab) => (
               <Tab
@@ -60,6 +61,7 @@ const Header = () => {
             ))}
           </Tabs>
         </div>
+        <SignUp />
       </div>
     </header>
   );
