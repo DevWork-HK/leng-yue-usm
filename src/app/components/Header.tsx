@@ -9,6 +9,7 @@ import { ReactElement } from 'react';
 import Link from 'next/link';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 type TabContent = {
   name: string;
@@ -34,7 +35,12 @@ const TabsContent: TabContent[] = [
   },
 ];
 
-const Header = () => {
+type HeaderProps = {
+  isLoggedIn: boolean;
+  displayName: string;
+};
+
+const Header = ({ isLoggedIn, displayName }: HeaderProps) => {
   const pathName = usePathname();
 
   return (
@@ -62,8 +68,16 @@ const Header = () => {
             ))}
           </Tabs>
         </div>
-        <SignUp />
-        <SignIn />
+        {isLoggedIn ? (
+          <Avatar size="lg">
+            <AvatarFallback>{displayName.substring(0, 2)}</AvatarFallback>
+          </Avatar>
+        ) : (
+          <>
+            <SignUp />
+            <SignIn />
+          </>
+        )}
       </div>
     </header>
   );
