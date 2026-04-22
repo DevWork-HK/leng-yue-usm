@@ -44,12 +44,15 @@ import { createEvent, getMembers } from '@/lib/supabase/actions';
 import { delay, formatDate, getEventName, toastBox } from '@/lib/utils';
 import { MemberType } from '@/schema/member';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CalendarDays, CalendarPlus } from 'lucide-react';
+import { CalendarDays, CalendarPlus, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { infer as _infer, object, string } from 'zod';
 import { zhHK } from 'react-day-picker/locale';
+import { API } from '@/constants/apis';
+import { ClanWarExcelResponseType } from '@/schema/event';
+import { Textarea } from '@/components/ui/textarea';
 
 const TITLE_SEPARATOR = '-';
 
@@ -79,11 +82,14 @@ const AddEvent = () => {
   const [memberLoading, setMemberLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [activeMembers, setActiveMembers] = useState<MemberType[]>([]);
+  const [notFoundNames, setNotFoundNames] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
+  const fileRef = useRef<HTMLInputElement>(null);
+
   const router = useRouter();
-  const { control, handleSubmit, reset } = useForm<CreateEventType>({
+  const { control, handleSubmit, reset, setValue } = useForm<CreateEventType>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {
       title: '',
@@ -92,6 +98,16 @@ const AddEvent = () => {
       attendees: [],
     },
   });
+
+  useEffect(() => {
+    getMembers({ activeOnly: true })
+      .then((members) => {
+        setActiveMembers(members);
+      })
+      .finally(() => {
+        setMemberLoading(false);
+      });
+  }, []);
 
   const onFormSubmit = async (data: CreateEventType) => {
     try {
@@ -120,15 +136,62 @@ const AddEvent = () => {
     }
   };
 
-  useEffect(() => {
-    getMembers({ activeOnly: true })
-      .then((members) => {
-        setActiveMembers(members);
-      })
-      .finally(() => {
-        setMemberLoading(false);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      toastBox.error('No file selected.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(API.VALID_ATTENDEES, {
+        method: 'POST',
+        body: formData,
       });
-  }, []);
+
+      if (response.ok) {
+        const result: ClanWarExcelResponseType = await response.json();
+
+        if (result) {
+          const validAttendeeNames = result.validMembers;
+
+          const [foundIds, notFoundNames] = validAttendeeNames.reduce(
+            (acc, name) => {
+              const member = activeMembers.find((m) => m.name === name);
+              if (member) {
+                acc[0].push(member.id);
+              } else {
+                acc[1].push(name);
+              }
+              return acc;
+            },
+            [[], []] as string[][],
+          );
+
+          setNotFoundNames(notFoundNames);
+
+          setValue('attendees', foundIds);
+          setValue('title', EVENT.CLAN_WAR);
+
+          toastBox.success('File processed successfully.');
+        } else {
+          toastBox.error('No valid attendees found in the file.');
+        }
+      } else {
+        toastBox.error('File processing failed.');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toastBox.error('File processing failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog
@@ -137,11 +200,18 @@ const AddEvent = () => {
         setDialogOpen(isOpen);
         if (!isOpen) {
           reset();
+          setNotFoundNames([]);
+          if (fileRef.current) {
+            fileRef.current.value = '';
+          }
         }
       }}
     >
       <DialogTrigger asChild>
-        <Button size="xl" className='border-chart-1 bg-linear-to-br from-chart-2 to-white'>
+        <Button
+          size="xl"
+          className="border-chart-1 bg-linear-to-br from-chart-2 to-white"
+        >
           <CalendarPlus /> 建立活動
         </Button>
       </DialogTrigger>
@@ -150,9 +220,26 @@ const AddEvent = () => {
         className="w-full sm:w-fit sm:min-w-lg max-w-[calc(100%-2rem)] sm:max-w-2xl"
         showCloseButton={false}
       >
-        <DialogHeader>
-          <DialogTitle>建立活動</DialogTitle>
-          <DialogDescription>記錄一個活動。</DialogDescription>
+        <DialogHeader className="flex-row items-center gap-4 justify-between">
+          <div className="space-y-2">
+            <DialogTitle>建立活動</DialogTitle>
+            <DialogDescription>記錄一個活動。</DialogDescription>
+          </div>
+          <Button
+            size="icon"
+            type="button"
+            disabled={loading}
+            onClick={() => fileRef.current?.click()}
+          >
+            <Input
+              type="file"
+              ref={fileRef}
+              className="hidden"
+              accept=".csv"
+              onChange={handleFileUpload}
+            />
+            {loading ? <Spinner /> : <Upload />}
+          </Button>
         </DialogHeader>
 
         <div>
@@ -275,6 +362,17 @@ const AddEvent = () => {
                   </Field>
                 )}
               />
+
+              {notFoundNames.length > 0 && (
+                <Field data-invalid>
+                  <FieldLabel>Excel 未找到的成員</FieldLabel>
+                  <Textarea
+                    value={notFoundNames.join(', ')}
+                    readOnly
+                    aria-invalid="true"
+                  />
+                </Field>
+              )}
 
               <Controller
                 name="attendees"

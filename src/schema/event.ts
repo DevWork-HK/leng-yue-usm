@@ -18,3 +18,13 @@ export type EventType = _infer<typeof eventSchema>;
 export type DetailedEventType = Omit<EventType, 'attendees'> & {
   attendees: MemberType[];
 };
+
+export const clanWarExcelResponseSchema = object({
+  clanName: string(),
+  totalMembers: number(),
+  validMembers: string().array(),
+});
+
+export type ClanWarExcelResponseType = _infer<
+  typeof clanWarExcelResponseSchema
+>;
