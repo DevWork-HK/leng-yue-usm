@@ -1,15 +1,22 @@
 'use client';
 
-import Tabs from '@/app/components/Tabs';
-import Tab from '@/app/components/Tab';
+import { ReactElement, useEffect, useState } from 'react';
 import { Users, CalendarCheck2, PartyPopper } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { ReactElement } from 'react';
 import Link from 'next/link';
+import Tabs from '@/app/components/Tabs';
+import Tab from '@/app/components/Tab';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { getCurrentUserMetadata, signOut } from '@/lib/supabase/actions';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 type TabContent = {
   name: string;
@@ -35,13 +42,35 @@ const TabsContent: TabContent[] = [
   },
 ];
 
-type HeaderProps = {
-  isLoggedIn: boolean;
-  displayName: string;
-};
+const DEFAULT_AVATAR_USER_NAME = '未知';
 
-const Header = ({ isLoggedIn, displayName }: HeaderProps) => {
+const Header = () => {
   const pathName = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [displayName, setDisplayName] = useState(DEFAULT_AVATAR_USER_NAME);
+
+  const updateUserState = async () => {
+    const { user_metadata, session_id } =
+      (await getCurrentUserMetadata()) || {};
+    const displayName = user_metadata?.display_name || DEFAULT_AVATAR_USER_NAME;
+    setDisplayName(displayName);
+    setIsLoggedIn(!!session_id);
+  };
+  useEffect(() => {
+    (async () => {
+      await updateUserState();
+    })();
+  }, []);
+
+  const logOutUser = async () => {
+    try {
+      await signOut();
+      setIsLoggedIn(false);
+      setDisplayName(DEFAULT_AVATAR_USER_NAME);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <header className="w-full border-b">
@@ -69,14 +98,24 @@ const Header = ({ isLoggedIn, displayName }: HeaderProps) => {
           </Tabs>
         </div>
         {isLoggedIn ? (
-          <Avatar size="lg">
-            <AvatarFallback>{displayName.substring(0, 2)}</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar size="lg">
+                <AvatarFallback>{displayName.substring(0, 2)}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={logOutUser} variant="destructive">
+                登出
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
-          <>
+          <div className="flex gap-x-2">
             <SignUp />
-            <SignIn />
-          </>
+            <SignIn onSignInSuccess={updateUserState} />
+          </div>
         )}
       </div>
     </header>

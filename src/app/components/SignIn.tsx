@@ -33,7 +33,11 @@ const signInFormSchema = object({
 
 type SignInFormType = _infer<typeof signInFormSchema>;
 
-const SignIn = () => {
+type SignInProps = {
+  onSignInSuccess?: () => void;
+};
+
+const SignIn = ({ onSignInSuccess }: SignInProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +55,9 @@ const SignIn = () => {
       await signIn(data.email, data.password);
       setDialogOpen(false);
       toastBox.success(`${data.email} 登入成功！`);
+      if (onSignInSuccess) {
+        onSignInSuccess();
+      }
       reset();
     } catch (error) {
       console.error('Sign In Error:', error);

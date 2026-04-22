@@ -277,3 +277,25 @@ export const signIn = async (email: string, password: string) => {
 
   return data;
 };
+
+export const signOut = async () => {
+  const supabase = createClient(cookies());
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    throw error;
+  }
+};
+
+export const getCurrentUserMetadata = async () => {
+  const supabase = createClient(cookies());
+
+  const { data, error } = await supabase.auth.getClaims();
+
+  if (error) {
+    throw error;
+  }
+
+  return data?.claims || null;
+};

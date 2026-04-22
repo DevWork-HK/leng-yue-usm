@@ -57,7 +57,7 @@ const SignUp = () => {
       setLoading(true);
       await signUp(data.displayName, data.email, data.password);
       setDialogOpen(false);
-      toastBox.success(`${data.email} 註冊成功！`);
+      toastBox.success(`${data.email} 註冊成功！請重新登入。`);
       reset();
     } catch (error) {
       console.error('Sign Up Error:', error);
