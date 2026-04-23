@@ -43,8 +43,8 @@ const LuckyDrawHistoryItem = ({ item }: LuckyDrawHistoryItemProps) => {
 
   return (
     <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <div>
-        <h4 className="font-semibold text-lg mb-4 flex items-center justify-between">
+      <div className="flex flex-col gap-y-4">
+        <h4 className="font-semibold text-lg flex items-center justify-between">
           {item.event}
           <AlertDialogTrigger asChild>
             <Button
@@ -69,9 +69,7 @@ const LuckyDrawHistoryItem = ({ item }: LuckyDrawHistoryItemProps) => {
           <AlertDialogTitle>刪除 {item.event}?</AlertDialogTitle>
         </AlertDialogHeader>
 
-        <div>
-          確定要刪除這個抽獎活動嗎？此操作無法撤銷。
-        </div>
+        <div>確定要刪除這個抽獎活動嗎？此操作無法撤銷。</div>
 
         <AlertDialogFooter>
           <AlertDialogCancel asChild>

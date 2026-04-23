@@ -164,16 +164,45 @@ export function getAvatarUrl(classEnum: CLASS, inverted = true) {
   return `/images/${classEnum.toLowerCase()}${inverted ? '_inverted' : ''}${inverted ? '.jpg' : '.jpeg'}`;
 }
 
-export function drawItemsFromArray<T>(
-  array: T[],
-  count: number,
-): { drawn: T[]; remaining: T[] } {
-  if (count >= array.length) {
-    return { drawn: array, remaining: [] };
+type RandomSelectOptions = {
+  size: number;
+  duration?: number;
+  targetCount: number;
+  decreasingRate?: number;
+  onUpdate?: (selectedItems: number[]) => Promise<void> | void;
+  onComplete?: (finalSelectedItems: number[]) => Promise<void> | void;
+};
+
+export async function randomIndexes({
+  size,
+  duration = 3000,
+  targetCount,
+  decreasingRate = 100,
+  onUpdate,
+  onComplete,
+}: RandomSelectOptions): Promise<void> {
+  const selectedIndexes = new Set<number>();
+  let delayTime = 50;
+  let elapsedTime = 0;
+
+  if (targetCount > size) {
+    await onComplete?.(
+      Array.from({ length: size }, (_, i) => i).sort(() => Math.random() - 0.5),
+    );
+    return;
   }
 
-  const shuffled = [...array].sort(() => 0.5 - Math.random());
-  const drawn = shuffled.slice(0, count);
-  const remaining = shuffled.slice(count);
-  return { drawn, remaining };
+  while (elapsedTime < duration) {
+    selectedIndexes.clear();
+    while (selectedIndexes.size < targetCount) {
+      selectedIndexes.add(Math.floor(Math.random() * size));
+    }
+
+    await onUpdate?.(Array.from(selectedIndexes));
+    await delay(delayTime);
+    elapsedTime += delayTime;
+    delayTime += decreasingRate; // Gradually increase delay to slow down
+  }
+
+  await onComplete?.(Array.from(selectedIndexes));
 }

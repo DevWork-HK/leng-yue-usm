@@ -13,9 +13,9 @@ import { intersection } from 'lodash';
 import { EVENT, FULL_MONTH_FORMAT, IANA_HK_TIME_ZONE } from '@/constants';
 import { createLuckyDraw, getEvents, getMembers } from '@/lib/supabase/actions';
 import { DateTime } from 'luxon';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
-import { drawItemsFromArray, toastBox } from '@/lib/utils';
+import { cn, randomIndexes, toastBox } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { CalendarFold, Trophy, Users } from 'lucide-react';
@@ -58,6 +58,9 @@ export type CreateLuckyDrawType = _infer<typeof createLuckyDrawSchema>;
 
 const LuckyDrawEvent = () => {
   const [loading, setLoading] = useState(false);
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+
+  const resultSectionRef = useRef<HTMLDivElement>(null);
 
   const { control, setValue, reset, handleSubmit } =
     useForm<CreateLuckyDrawType>({
@@ -83,6 +86,15 @@ const LuckyDrawEvent = () => {
     control,
     name: 'result',
   });
+
+  useEffect(() => {
+    if (luckDrawResult && luckDrawResult.length > 0) {
+      resultSectionRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [luckDrawResult]);
 
   useEffect(() => {
     if (!selectedEvent) return;
@@ -144,35 +156,53 @@ const LuckyDrawEvent = () => {
   }, [selectedEvent, setValue, reset]);
 
   const onFormSubmit = async (data: CreateLuckyDrawType) => {
+    if (data.eligibleMembers.length === 0) {
+      toastBox.warning('沒有符合條件的成員。');
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const { drawn, remaining } = drawItemsFromArray(data.eligibleMembers, 3);
-
-      const result = [
-        {
-          name: '全勤獎',
-          priority: 5,
-          winners: drawn.map((winner) => winner.id),
+      await randomIndexes({
+        size: data.eligibleMembers.length,
+        targetCount: 4,
+        duration: 6000,
+        onUpdate: async (indexes) => {
+          setSelectedIndexes(indexes);
         },
-      ];
+        onComplete: async (finalIndexes) => {
+          setSelectedIndexes(finalIndexes);
 
-      const { drawn: grandPrizeWinners } = drawItemsFromArray(remaining, 1);
+          const drawnMembers = finalIndexes.map(
+            (index) => data.eligibleMembers[index],
+          );
 
-      if (grandPrizeWinners.length > 0) {
-        result.unshift({
-          name: '680自選',
-          priority: 1,
-          winners: grandPrizeWinners.map((winner) => winner.id),
-        });
-      }
+          const result = [
+            {
+              name: '全勤獎',
+              priority: 5,
+              winners: drawnMembers.slice(0, 3).map((winner) => winner.id),
+            },
+          ];
 
-      await createLuckyDraw({
-        event: data.event,
-        result,
+          if (drawnMembers.length > 3) {
+            result.unshift({
+              name: '680自選',
+              priority: 1,
+              winners: drawnMembers.slice(-1).map((winner) => winner.id),
+            });
+          }
+
+          await createLuckyDraw({
+            event: data.event,
+            result,
+          });
+
+          setValue('result', result);
+          toastBox.success('Lucky draw created successfully');
+        },
       });
-
-      setValue('result', result);
-      toastBox.success('Lucky draw created successfully');
     } catch (error) {
       console.error('Error creating lucky draw:', error);
       toastBox.error('Failed to create lucky draw');
@@ -279,29 +309,39 @@ const LuckyDrawEvent = () => {
             合格成員 ({eligibleMembers.length})
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {eligibleMembers.map((member: MemberType) => (
+            {eligibleMembers.map((member: MemberType, index: number) => (
               <div
                 key={member.id}
-                className="flex gap-x-4 items-center border rounded-lg p-3 relative"
+                className={cn(
+                  'flex gap-x-4 items-center border rounded-lg p-3 relative',
+                  {
+                    'bg-gray-200': selectedIndexes.includes(index),
+                    'bg-yellow-100':
+                      selectedIndexes.length > 3 &&
+                      selectedIndexes.at(-1) === index,
+                  },
+                )}
               >
                 <ClassAvatar
                   memberClass={member.class}
                   fallbackText={member.name}
                 />
                 {member.name}
-                <Button
-                  variant="outline"
-                  size="icon-xs"
-                  className="border-none p-0 ml-auto absolute top-0 right-0 translate-x-1/2 translate-y-[-50%] bg-zinc-100 rounded-full"
-                  onClick={() => {
-                    const updatedMembers = eligibleMembers.filter(
-                      (m) => m.id !== member.id,
-                    );
-                    setValue('eligibleMembers', updatedMembers);
-                  }}
-                >
-                  &times;
-                </Button>
+                {luckDrawResult.length < 1 && (
+                  <Button
+                    variant="outline"
+                    size="icon-xs"
+                    className="border-none p-0 ml-auto absolute top-0 right-0 translate-x-1/2 translate-y-[-50%] bg-zinc-100 rounded-full"
+                    onClick={() => {
+                      const updatedMembers = eligibleMembers.filter(
+                        (m) => m.id !== member.id,
+                      );
+                      setValue('eligibleMembers', updatedMembers);
+                    }}
+                  >
+                    &times;
+                  </Button>
+                )}
               </div>
             ))}
           </div>
@@ -309,7 +349,10 @@ const LuckyDrawEvent = () => {
       )}
 
       {luckDrawResult && luckDrawResult.length > 0 && (
-        <SectionBlock className="mt-7 border-2 border-violet-200 bg-violet-100">
+        <SectionBlock
+          ref={resultSectionRef}
+          className="mt-7 border-2 border-violet-200 bg-violet-100"
+        >
           <h3 className="flex items-center gap-x-4 font-semibold text-xl">
             <Trophy className="stroke-3 stroke-violet-600" />
             抽獎結果

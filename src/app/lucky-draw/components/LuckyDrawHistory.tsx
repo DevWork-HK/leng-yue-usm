@@ -50,9 +50,7 @@ const LuckyDrawHistory = async ({ className }: { className?: ClassValue }) => {
 
   return (
     <SectionBlock className={className}>
-      <h3 className="flex items-center gap-x-4 font-semibold text-xl justify-between">
-        抽獎歷史
-      </h3>
+      <h3 className="font-semibold text-xl">抽獎歷史</h3>
       {luckyDrawEvents.length < 1 ? (
         <EmptyLuckyDrawHistory />
       ) : (
