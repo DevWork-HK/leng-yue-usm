@@ -20,7 +20,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Field,
@@ -59,7 +58,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import ClassAvatar from '@/components/custom/ClassAvatar';
@@ -118,6 +116,7 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
 
 const Member = ({ member }: MemberProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -177,12 +176,57 @@ const Member = ({ member }: MemberProps) => {
   };
 
   return (
-    <div
-      className={cn(
-        'flex flex-nowrap items-center gap-x-4 border border-zinc-300 rounded-xl bg-white',
-        member.active === false && 'opacity-50',
-      )}
-    >
+    <>
+      <Item
+        className={cn(
+          'border border-zinc-300 rounded-xl bg-white',
+          member.active === false && 'opacity-50',
+        )}
+      >
+        <ItemMedia>
+          <ClassAvatar memberClass={member.class} fallbackText={member.name} />
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle>{member.name}</ItemTitle>
+          <ItemDescription>{getClassName(member.class)}</ItemDescription>
+        </ItemContent>
+        <ItemContent>
+          <PositionLabel position={member.position} />
+        </ItemContent>
+        <ItemActions>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => setDialogOpen(true)}
+          >
+            <PencilLine />
+          </Button>
+          {member.active ? (
+            <Button
+              type="button"
+              size="icon"
+              variant="destructive"
+              className="cursor-pointer bg-white"
+              onClick={() => setAlertDialogOpen(true)}
+            >
+              <Trash2 />
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="cursor-pointer text-green-600 hover:bg-green-100 hover:text-green-600"
+              onClick={() => setAlertDialogOpen(true)}
+            >
+              <SquarePlus />
+            </Button>
+          )}
+        </ItemActions>
+      </Item>
+
       <Dialog
         open={dialogOpen}
         onOpenChange={(isOpen) => {
@@ -190,164 +234,115 @@ const Member = ({ member }: MemberProps) => {
           if (!isOpen) reset();
         }}
       >
-        <AlertDialog>
-          <Item>
-            <ItemMedia>
-              <ClassAvatar
-                memberClass={member.class}
-                fallbackText={member.name}
-              />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>{member.name}</ItemTitle>
-              <ItemDescription>{getClassName(member.class)}</ItemDescription>
-            </ItemContent>
-            <ItemContent>
-              <PositionLabel position={member.position} />
-            </ItemContent>
-            <ItemActions>
-              <DialogTrigger asChild>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="ghost"
-                  className="cursor-pointer"
-                >
-                  <PencilLine />
-                </Button>
-              </DialogTrigger>
-              <AlertDialogTrigger asChild>
-                {member.active ? (
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="destructive"
-                    className="cursor-pointer bg-white"
-                  >
-                    <Trash2 />
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="cursor-pointer text-green-600 hover:bg-green-100 hover:text-green-600"
-                  >
-                    <SquarePlus />
-                  </Button>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>更新幫眾資料</DialogTitle>
+            <DialogDescription>
+              更新幫眾資料。點擊「確定」以保存更改。
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            id={`member-edit-form-${member.id}`}
+            onSubmit={handleSubmit(onFormSubmit)}
+          >
+            <FieldGroup>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="edit-form-name">角色ID</FieldLabel>
+                    <Input {...field} id="edit-form-name" />
+                    {invalid && <FieldError errors={[error]} />}
+                  </Field>
                 )}
-              </AlertDialogTrigger>
-            </ItemActions>
-          </Item>
+              />
 
-          <DialogContent showCloseButton={false}>
-            <DialogHeader>
-              <DialogTitle>更新幫眾資料</DialogTitle>
-              <DialogDescription>
-                更新幫眾資料。點擊「確定」以保存更改。
-              </DialogDescription>
-            </DialogHeader>
+              <Controller
+                name="class"
+                control={control}
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="edit-form-class">職業</FieldLabel>
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger id="edit-form-class">
+                        <SelectValue placeholder="選擇職業" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        {Object.entries(CLASS).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {getClassName(value)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {invalid && <FieldError errors={[error]} />}
+                  </Field>
+                )}
+              />
 
-            <form
-              id={`member-edit-form-${member.id}`}
-              onSubmit={handleSubmit(onFormSubmit)}
-            >
-              <FieldGroup>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field, fieldState: { invalid, error } }) => (
-                    <Field>
-                      <FieldLabel htmlFor="edit-form-name">角色ID</FieldLabel>
-                      <Input {...field} id="edit-form-name" />
-                      {invalid && <FieldError errors={[error]} />}
-                    </Field>
-                  )}
-                />
+              <Controller
+                name="position"
+                control={control}
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <Field>
+                    <FieldLabel htmlFor="edit-form-position">職位</FieldLabel>
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger id="edit-form-position">
+                        <SelectValue placeholder="選擇職位" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        {Object.entries(POSITION).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {getPositionName(value)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {invalid && <FieldError errors={[error]} />}
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </form>
 
-                <Controller
-                  name="class"
-                  control={control}
-                  render={({ field, fieldState: { invalid, error } }) => (
-                    <Field>
-                      <FieldLabel htmlFor="edit-form-class">職業</FieldLabel>
-                      <Select {...field} onValueChange={field.onChange}>
-                        <SelectTrigger id="edit-form-class">
-                          <SelectValue placeholder="選擇職業" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          {Object.entries(CLASS).map(([key, value]) => (
-                            <SelectItem key={key} value={value}>
-                              {getClassName(value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {invalid && <FieldError errors={[error]} />}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="position"
-                  control={control}
-                  render={({ field, fieldState: { invalid, error } }) => (
-                    <Field>
-                      <FieldLabel htmlFor="edit-form-position">職位</FieldLabel>
-                      <Select {...field} onValueChange={field.onChange}>
-                        <SelectTrigger id="edit-form-position">
-                          <SelectValue placeholder="選擇職位" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          {Object.entries(POSITION).map(([key, value]) => (
-                            <SelectItem key={key} value={value}>
-                              {getPositionName(value)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {invalid && <FieldError errors={[error]} />}
-                    </Field>
-                  )}
-                />
-              </FieldGroup>
-            </form>
-
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  取消
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                variant="default"
-                form={`member-edit-form-${member.id}`}
-                disabled={loading}
-              >
-                {loading ? <Spinner /> : '確定'}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                取消
               </Button>
-            </DialogFooter>
-          </DialogContent>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>您確定要執行此操作嗎？</AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={
-                  member.active === true ? onDeleteConfirm : onAddMemberConfirm
-                }
-              >
-                確定
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            </DialogClose>
+            <Button
+              type="submit"
+              variant="default"
+              form={`member-edit-form-${member.id}`}
+              disabled={loading}
+            >
+              {loading ? <Spinner /> : '確定'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
-    </div>
+
+      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>您確定要執行此操作嗎？</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={
+                member.active === true ? onDeleteConfirm : onAddMemberConfirm
+              }
+            >
+              確定
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
