@@ -1,8 +1,7 @@
 'use client';
 
 import { MemberType } from '@/schema/member';
-import { Controller, useForm } from 'react-hook-form';
-import { PencilLine, SquarePlus, Trash2 } from 'lucide-react';
+import { Eye, PencilLine, SquarePlus, Trash2 } from 'lucide-react';
 import {
   Item,
   ItemActions,
@@ -12,74 +11,18 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { CLASS, POSITION } from '@/constants';
-import {
-  cn,
-  delay,
-  getClassName,
-  getDirtyValues,
-  getPositionName,
-  toastBox,
-} from '@/lib/utils';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { object, string, enum as enum_, infer as infer_ } from 'zod';
+import { POSITION } from '@/constants';
+import { cn, getClassName, getPositionName } from '@/lib/utils';
 import { useState } from 'react';
-import { deleteMember, updateMember } from '@/lib/supabase/actions';
-import { useRouter } from 'next/navigation';
-import { Spinner } from '@/components/ui/spinner';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import ClassAvatar from '@/components/custom/ClassAvatar';
+import MemberEdit from './MemberEdit';
+import MemberDelete from './MemberDelete';
+import MemberView from './MemberView';
 
 type MemberProps = {
   member: MemberType;
 };
-
-const editMemberSchema = object({
-  id: string().nonoptional(),
-  name: string().min(1, 'Name must be at least 1 character.'),
-  position: enum_(
-    POSITION,
-    `Class must be one of the ${Object.values(POSITION).join(', ')}.`,
-  ).optional(),
-  class: enum_(
-    CLASS,
-    `Class must be one of the ${Object.values(CLASS).join(', ')}.`,
-  ),
-});
-
-type EditMemberType = infer_<typeof editMemberSchema>;
 
 const PositionLabel = ({ position }: { position: POSITION }) => {
   switch (position) {
@@ -115,65 +58,9 @@ const PositionLabel = ({ position }: { position: POSITION }) => {
 };
 
 const Member = ({ member }: MemberProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { dirtyFields },
-  } = useForm<EditMemberType>({
-    resolver: zodResolver(editMemberSchema),
-    defaultValues: {
-      id: member.id,
-      name: member.name,
-      class: member.class,
-      position: member.position,
-    },
-  });
-
-  const onFormSubmit = async (data: EditMemberType) => {
-    try {
-      setLoading(true);
-      const changes = getDirtyValues(dirtyFields, data);
-      await updateMember(changes, member.id);
-      router.refresh();
-
-      await delay(1000);
-      setDialogOpen(false);
-      toastBox.success('Member updated successfully.');
-    } catch (error) {
-      console.error('Unexpected error while updating member:', error);
-      toastBox.error('Member update failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onDeleteConfirm = async () => {
-    try {
-      await deleteMember([member.id]);
-      toastBox.success('Member deleted successfully.');
-      router.refresh();
-    } catch (error) {
-      console.error('Unexpected error while deleting member:', error);
-      toastBox.error('Member delete failed.');
-    }
-  };
-
-  const onAddMemberConfirm = async () => {
-    try {
-      await updateMember({ active: true }, member.id);
-      toastBox.success('Member added successfully.');
-      router.refresh();
-    } catch (error) {
-      console.error('Unexpected error while adding member:', error);
-      toastBox.error('Member added failed.');
-    }
-  };
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
   return (
     <>
@@ -199,7 +86,16 @@ const Member = ({ member }: MemberProps) => {
             size="icon"
             variant="ghost"
             className="cursor-pointer"
-            onClick={() => setDialogOpen(true)}
+            onClick={() => setViewDialogOpen(true)}
+          >
+            <Eye />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => setEditDialogOpen(true)}
           >
             <PencilLine />
           </Button>
@@ -209,7 +105,7 @@ const Member = ({ member }: MemberProps) => {
               size="icon"
               variant="destructive"
               className="cursor-pointer bg-white"
-              onClick={() => setAlertDialogOpen(true)}
+              onClick={() => setDeleteDialogOpen(true)}
             >
               <Trash2 />
             </Button>
@@ -219,7 +115,7 @@ const Member = ({ member }: MemberProps) => {
               size="icon"
               variant="ghost"
               className="cursor-pointer text-green-600 hover:bg-green-100 hover:text-green-600"
-              onClick={() => setAlertDialogOpen(true)}
+              onClick={() => setDeleteDialogOpen(true)}
             >
               <SquarePlus />
             </Button>
@@ -227,121 +123,23 @@ const Member = ({ member }: MemberProps) => {
         </ItemActions>
       </Item>
 
-      <Dialog
-        open={dialogOpen}
-        onOpenChange={(isOpen) => {
-          setDialogOpen(isOpen);
-          if (!isOpen) reset();
-        }}
-      >
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle>更新幫眾資料</DialogTitle>
-            <DialogDescription>
-              更新幫眾資料。點擊「確定」以保存更改。
-            </DialogDescription>
-          </DialogHeader>
+      <MemberView
+        member={member}
+        dialogOpen={viewDialogOpen}
+        setDialogOpen={setViewDialogOpen}
+      />
 
-          <form
-            id={`member-edit-form-${member.id}`}
-            onSubmit={handleSubmit(onFormSubmit)}
-          >
-            <FieldGroup>
-              <Controller
-                name="name"
-                control={control}
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <Field>
-                    <FieldLabel htmlFor="edit-form-name">角色ID</FieldLabel>
-                    <Input {...field} id="edit-form-name" />
-                    {invalid && <FieldError errors={[error]} />}
-                  </Field>
-                )}
-              />
+      <MemberEdit
+        member={member}
+        dialogOpen={editDialogOpen}
+        setDialogOpen={setEditDialogOpen}
+      />
 
-              <Controller
-                name="class"
-                control={control}
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <Field>
-                    <FieldLabel htmlFor="edit-form-class">職業</FieldLabel>
-                    <Select {...field} onValueChange={field.onChange}>
-                      <SelectTrigger id="edit-form-class">
-                        <SelectValue placeholder="選擇職業" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        {Object.entries(CLASS).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {getClassName(value)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {invalid && <FieldError errors={[error]} />}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="position"
-                control={control}
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <Field>
-                    <FieldLabel htmlFor="edit-form-position">職位</FieldLabel>
-                    <Select {...field} onValueChange={field.onChange}>
-                      <SelectTrigger id="edit-form-position">
-                        <SelectValue placeholder="選擇職位" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        {Object.entries(POSITION).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {getPositionName(value)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {invalid && <FieldError errors={[error]} />}
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </form>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                取消
-              </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              variant="default"
-              form={`member-edit-form-${member.id}`}
-              disabled={loading}
-            >
-              {loading ? <Spinner /> : '確定'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>您確定要執行此操作嗎？</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={
-                member.active === true ? onDeleteConfirm : onAddMemberConfirm
-              }
-            >
-              確定
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <MemberDelete
+        alertDialogOpen={deleteDialogOpen}
+        setAlertDialogOpen={setDeleteDialogOpen}
+        member={member}
+      />
     </>
   );
 };
