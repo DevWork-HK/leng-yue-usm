@@ -9,13 +9,17 @@ import { DateTime } from 'luxon';
 import { IANA_HK_TIME_ZONE } from '@/constants/constants';
 import { getEvents } from '@/lib/supabase/actions';
 import { formatDate } from '@/lib/utils';
+import { EVENT } from '@/constants';
 
 const AttendanceStat = async () => {
   const eventsStartTime = DateTime.local({ zone: IANA_HK_TIME_ZONE })
     .minus({ months: 3 })
     .startOf('month');
 
-  const events = await getEvents({ startTime: eventsStartTime });
+  const events = await getEvents({
+    startTime: eventsStartTime,
+    title: EVENT.CLAN_WAR,
+  });
 
   const graphData = events
     .map((event, index) => {
@@ -47,11 +51,11 @@ const AttendanceStat = async () => {
 
   return (
     <div className="w-full">
-      <p className="text-gray-500 mb-2">過去三個月的活動統計</p>
+      <p className="text-gray-500 mb-2">過去三個月的聯賽統計</p>
       <div className="flex flex-nowrap gap-x-6 w-full mb-6">
         <Card className="flex-1">
           <CardHeader>
-            <CardDescription>總活動數</CardDescription>
+            <CardDescription>總聯賽數</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center font-extrabold">
             {events.length}
@@ -60,7 +64,7 @@ const AttendanceStat = async () => {
 
         <Card className="flex-1">
           <CardHeader>
-            <CardDescription>平均參與率</CardDescription>
+            <CardDescription>平均聯賽參與率</CardDescription>
           </CardHeader>
           <CardContent className="text-2xl text-center text-blue-400 font-extrabold">
             {events.length > 0

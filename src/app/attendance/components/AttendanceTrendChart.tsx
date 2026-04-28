@@ -32,7 +32,7 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <TrendingUp className="inline stroke-blue-400 mr-2" /> 活動參與趨勢
+          <TrendingUp className="inline stroke-blue-400 mr-2" /> 幫會聯賽參與趨勢
         </CardTitle>
       </CardHeader>
       <CardContent>
